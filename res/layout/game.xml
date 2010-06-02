@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+	android:background="#333333"
+	android:gravity="center"
+	>
+
+	<org.ygl.lytes.LytesGridView
+		android:background="#333333"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:id="@+id/lytesGridView"
+	/>
+	
+	<Button
+		android:id="@+id/resetButton"
+		android:text="Reset"
+		android:textStyle="bold"
+		android:layout_height="wrap_content"
+		android:layout_width="wrap_content"
+		android:layout_below="@id/lytesGridView"
+		android:layout_marginTop="10px"
+		android:layout_marginLeft="10px"
+		android:clickable="true"
+		/>
+		
+	<Button android:text="Back"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignTop="@id/resetButton"
+		android:layout_toRightOf="@id/resetButton"
+		android:textStyle="bold"
+		android:id="@+id/backButton"
+		android:clickable="true"
+		/>
+	<TextView
+		android:id="@+id/levelLabel"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/lytesGridView"
+		android:layout_toRightOf="@id/backButton"
+		android:layout_alignTop="@id/resetButton"
+		android:text="Level 1"
+		android:textStyle="bold"
+		android:textColor="#ffffff"
+	/>
+	<TextView
+		android:id="@+id/clicksLabel"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/levelLabel"
+		android:layout_toRightOf="@id/backButton"
+		android:layout_alignBottom="@id/resetButton"
+		android:text="Clicks "
+		android:textStyle="bold"
+		android:textColor="#ffffff"
+	/>
+	<TextView
+		android:id="@+id/parLabel"
+		android:layout_marginLeft="10px"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/levelLabel"
+		android:layout_toRightOf="@id/clicksLabel"
+		android:layout_alignBottom="@id/clicksLabel"
+		android:text="Par "
+		android:textStyle="bold"
+		android:textColor="#ffffff"
+	/>
+	
+		
+</RelativeLayout>
