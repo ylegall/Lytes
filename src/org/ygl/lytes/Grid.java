@@ -37,7 +37,7 @@ public class Grid {
 		// of 'clicks' that we will use
 		// to set up the game:
 		Random rand = new Random(gameCode);
-		par = gameCode/3 + 1;
+		par = gameCode/4 + 1;
 		par = (par > 100)? 100 : par;
 		
 		// clear the board first

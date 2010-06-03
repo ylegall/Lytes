@@ -12,11 +12,13 @@ import android.widget.TextView;
 public class Lytes extends Activity implements View.OnClickListener {
 	
 	static Grid grid;
-	public static String ICICLE_KEY = "lytes";
+	//public static String ICICLE_KEY = "lytes";
 	public static final int INVALID_GAME_CODE = 0;
 	public static final int WIN_GAME = 1;
 
-	/** Called when the activity is first created. */
+	/**
+	 * Called when the activity is first created. 
+	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,7 @@ public class Lytes extends Activity implements View.OnClickListener {
 				TextView textField = (TextView) findViewById(R.id.selectTextField);
 				String text = textField.getText().toString();
 				
+				// try to parse it as an int:
 				try {
 					gameCode = Integer.parseInt(text);
 				} catch (NumberFormatException nfe) {
@@ -58,7 +61,7 @@ public class Lytes extends Activity implements View.OnClickListener {
 					return;
 				}
 				
-				// should be between 0 and 999:
+				// check if it's between 0 and 999:
 				if(gameCode < 1) {
 					showDialog(INVALID_GAME_CODE);
 					return;
@@ -92,7 +95,12 @@ public class Lytes extends Activity implements View.OnClickListener {
 		}
 	}
 	
-	public final void loadGame(int gameCode) {
+	/**
+	 * Loads a particular game (level). 
+	 * Called from the game layout.
+	 * @param gameCode The ID of the game to load.
+	 */
+	final void loadGame(final int gameCode) {
 		grid.setupGame(gameCode);
 		TextView tv = (TextView)findViewById(R.id.clicksLabel);
 		tv.setTextColor(Color.WHITE);
@@ -102,6 +110,10 @@ public class Lytes extends Activity implements View.OnClickListener {
 		findViewById(R.id.lytesGridView).invalidate();
 	}
 	
+	/**
+	 * Creates and shows different message dialogs based on
+	 * a static integer code. Invoked by calling <code>showDialog(int)</code>
+	 */
 	@Override
 	protected Dialog onCreateDialog(int dialogID) {
 
