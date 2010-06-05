@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -12,7 +14,7 @@ import android.widget.TextView;
 public class Lytes extends Activity implements View.OnClickListener {
 	
 	static Grid grid;
-	//public static String ICICLE_KEY = "lytes";
+	public static final String ICICLE_KEY = "lytes";
 	public static final int INVALID_GAME_CODE = 0;
 	public static final int WIN_GAME = 1;
 
@@ -22,8 +24,33 @@ public class Lytes extends Activity implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        changeContentView(R.layout.main);
+        
         grid = new Grid(5);
+        int code;
+        
+        // try to load a previous game or saved state:
+        if (savedInstanceState == null) {
+            
+        	// set up a new game
+            SharedPreferences prefs = getSharedPreferences(ICICLE_KEY, Activity.MODE_PRIVATE);
+            code = prefs.getInt("gameCode", INVALID_GAME_CODE);
+            
+            // first check if there is a saved game in the system:
+            if(code == INVALID_GAME_CODE) {
+            	changeContentView(R.layout.main);
+            } else {
+            	changeContentView(R.layout.game);
+            	loadGame(code);
+            }
+
+        } else {
+            // load level (or game)
+        	changeContentView(R.layout.game);
+        	code = savedInstanceState.getInt("Lytes.gameCode");
+            code = (code <= 0)? 1 : code;
+            loadGame(code);
+        }
+        
     }
     
     // changes the content view between 2 options:
@@ -110,6 +137,22 @@ public class Lytes extends Activity implements View.OnClickListener {
 		findViewById(R.id.lytesGridView).invalidate();
 	}
 	
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //Store the game state
+    	outState.putInt("Lytes.gameCode", grid.gameCode);
+    }
+    
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        SharedPreferences prefs = getSharedPreferences(ICICLE_KEY, Activity.MODE_PRIVATE);
+        Editor editor = prefs.edit();
+        editor.putInt("gameCode", grid.gameCode);
+        editor.commit();
+        super.onBackPressed();
+    }
+	
 	/**
 	 * Creates and shows different message dialogs based on
 	 * a static integer code. Invoked by calling <code>showDialog(int)</code>
@@ -127,24 +170,6 @@ public class Lytes extends Activity implements View.OnClickListener {
 			        	   dialog.cancel();
 			           }
 			       });
-				break;
-				
-			case WIN_GAME:
-				builder.setMessage("You win!.\nContinue?");
-				builder.setPositiveButton("Yes",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							//TODO: implemente this
-							dialog.cancel();
-						}
-					});
-				builder.setPositiveButton("No",
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int id) {
-							//TODO: implemente this
-							dialog.cancel();
-						}
-					});
 				break;
 		}
 		builder.setCancelable(false);

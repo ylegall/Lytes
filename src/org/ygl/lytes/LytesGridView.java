@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * 
@@ -21,13 +22,16 @@ import android.widget.TextView;
 public class LytesGridView extends View implements View.OnTouchListener {
 
 	Grid grid;
-	//private int totalClicks;
 	private Paint paint;
 	private Bitmap onImage, offImage;
 	static int TILE_SIZE = 64;
-	static int XOFFSET = 0; //40;
-	static int YOFFSET = 0; //80;
-	static final String tag = "LYTES"; // TODO: remove
+	static int XOFFSET = 0;
+	static int YOFFSET = 0;
+	
+//	private Canvas offscreenCanvas;
+//	private Bitmap offscreenImage;
+	
+	//static final String tag = "LYTES"; // TODO: remove
 	
 	public LytesGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -65,15 +69,30 @@ public class LytesGridView extends View implements View.OnTouchListener {
 		
 		int size = Math.min(View.MeasureSpec.getSize(width), View.MeasureSpec.getSize(height));
 		TILE_SIZE = size / Grid.GRID_LENGTH;
-
 		setMeasuredDimension(size, size);
+		
+//        offscreenCanvas = new Canvas();
+//        offscreenImage = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
+//        offscreenCanvas.setBitmap(offscreenImage);
 	}
+	
+//    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+//        if (offscreenImage != null) {
+//        	offscreenImage .recycle();
+//        }
+//        offscreenCanvas = new Canvas();
+//        offscreenImage = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+//        offscreenCanvas.setBitmap(offscreenImage);
+//    }
+//    
+//    public void destroy() {
+//        if (offscreenImage != null) {
+//        	offscreenImage.recycle();
+//        }
+//    }
 	
     @Override
     public void onDraw(Canvas canvas) {
-    	//Log.i(tag, "draw.");
-
-        // TODO: find a better way to position grid
         
         for (int x = 0 ; x < Grid.GRID_LENGTH; x++) {
         	float left = XOFFSET + x*TILE_SIZE;
@@ -81,11 +100,15 @@ public class LytesGridView extends View implements View.OnTouchListener {
             	float top = YOFFSET + y*TILE_SIZE;
             	if(!grid.grid[y][x]) {
             		canvas.drawBitmap(offImage, left, top, paint);
+            		//offscreenCanvas.drawBitmap(offImage, left, top, paint);
             	} else {
             		canvas.drawBitmap(onImage, left, top, paint);
+            		//offscreenCanvas.drawBitmap(onImage, left, top, paint);
             	}
             }
         }
+        
+        //canvas.drawBitmap(offscreenImage, 0, 0, paint);
     }
     
 	@Override
@@ -100,9 +123,16 @@ public class LytesGridView extends View implements View.OnTouchListener {
 			y = y/TILE_SIZE;
 
 			grid.click(y, x);
-			//totalClicks++;
 
+			//paint.setAlpha(255);
 			this.invalidate();
+			
+			// animation loop
+//			for(double i=0; i < 1; i += 0.01) {
+//				paint.setAlpha((int)(255*i));
+//				this.invalidate();
+//			}
+			
 			Activity lytesActivity = ((Activity)this.getContext());
 			TextView tv = ((TextView)lytesActivity.findViewById(R.id.clicksLabel));
 			tv.setText("Clicks " + grid.totalClicks);
@@ -113,12 +143,16 @@ public class LytesGridView extends View implements View.OnTouchListener {
 			// check for win:
 			if(grid.isEmpty()) {
 				
+				Context context = this.getContext();
+				Toast.makeText(context, "you win!", Toast.LENGTH_SHORT).show();
+				
 				// show the next board and update the lables:
-				((Lytes)getContext()).loadGame(grid.gameCode + 1);
+				((Lytes)context).loadGame(grid.gameCode + 1);
 			}
 		}
 		
 		// always return true since we will consume the event:
 		return true;
 	}
+
 }

@@ -32,6 +32,7 @@ public class Grid {
 		
 		this.gameCode = gameCode;
 		this.totalClicks = 0;
+		
 		// create a random number generator
 		// and calculate the total number
 		// of 'clicks' that we will use
