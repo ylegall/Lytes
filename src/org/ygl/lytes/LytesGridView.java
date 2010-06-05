@@ -137,7 +137,8 @@ public class LytesGridView extends View implements View.OnTouchListener {
 			if(grid.isEmpty()) {
 				
 				Context context = this.getContext();
-				Toast.makeText(context, "you win!", Toast.LENGTH_SHORT).show();
+				String winText = String.format("You have won level %d!", grid.gameCode);
+				Toast.makeText(context, winText, Toast.LENGTH_SHORT).show();
 				
 				// show the next board and update the lables:
 				((Lytes)context).loadGame(grid.gameCode + 1);
