@@ -62,11 +62,6 @@ public class LytesGridView extends View implements View.OnTouchListener {
 	
 	@Override
 	public void onMeasure(final int width, final int height) {
-	
-		// calculate screen size:
-//		DisplayMetrics dm = new DisplayMetrics();
-//		((Activity)this.getContext()).getWindowManager().getDefaultDisplay().getMetrics(dm);
-		
 		int size = Math.min(View.MeasureSpec.getSize(width), View.MeasureSpec.getSize(height));
 		TILE_SIZE = size / Grid.GRID_LENGTH;
 		setMeasuredDimension(size, size);

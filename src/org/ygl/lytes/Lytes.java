@@ -26,31 +26,7 @@ public class Lytes extends Activity implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         
         grid = new Grid(5);
-        int code;
-        
-        // try to load a previous game or saved state:
-        if (savedInstanceState == null) {
-            
-        	// set up a new game
-            SharedPreferences prefs = getSharedPreferences(ICICLE_KEY, Activity.MODE_PRIVATE);
-            code = prefs.getInt("gameCode", INVALID_GAME_CODE);
-            
-            // first check if there is a saved game in the system:
-            if(code == INVALID_GAME_CODE) {
-            	changeContentView(R.layout.main);
-            } else {
-            	changeContentView(R.layout.game);
-            	loadGame(code);
-            }
-
-        } else {
-            // load level (or game)
-        	changeContentView(R.layout.game);
-        	code = savedInstanceState.getInt("Lytes.gameCode");
-            code = (code <= 0)? 1 : code;
-            loadGame(code);
-        }
-        
+        changeContentView(R.layout.main);
     }
     
     // changes the content view between 2 options:
@@ -137,20 +113,33 @@ public class Lytes extends Activity implements View.OnClickListener {
 		findViewById(R.id.lytesGridView).invalidate();
 	}
 	
+    /**
+     * Upon being resumed we can retrieve the current state.  This allows us
+     * to update the state if it was changed at any time while paused.
+     */
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        //Store the game state
-    	outState.putInt("Lytes.gameCode", grid.gameCode);
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
+        int gameCode = prefs.getInt("gameCode", INVALID_GAME_CODE);
+        if(gameCode != INVALID_GAME_CODE) {
+        	changeContentView(R.layout.game);
+        	loadGame(gameCode);
+        }
     }
-    
+
+    /**
+     * Any time we are paused we need to save away the current state, so it
+     * will be restored correctly when we are resumed.
+     */
     @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-        SharedPreferences prefs = getSharedPreferences(ICICLE_KEY, Activity.MODE_PRIVATE);
-        Editor editor = prefs.edit();
+    protected void onPause() {
+        super.onPause();
+
+        SharedPreferences.Editor editor = getPreferences(Activity.MODE_PRIVATE).edit();
         editor.putInt("gameCode", grid.gameCode);
         editor.commit();
-        super.onBackPressed();
     }
 	
 	/**
