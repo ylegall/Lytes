@@ -72,14 +72,14 @@ public class Lytes extends Activity implements View.OnClickListener {
 					return;
 				}
 				
-				grid.setupGame(gameCode);
+				grid.setupGame(gameCode, false);
 				changeContentView(R.layout.game);
 				((TextView)findViewById(R.id.parLabel)).setText("Par "+grid.par);
 				((TextView)findViewById(R.id.levelLabel)).setText("Level "+grid.gameCode);
 				break;
 				
 			case R.id.newGameButton:
-				grid.setupGame(1);
+				grid.setupGame(1, false);
 				// start a new game:
 				changeContentView(R.layout.game);
 				((TextView)findViewById(R.id.levelLabel)).setText("Level 0");
@@ -101,7 +101,7 @@ public class Lytes extends Activity implements View.OnClickListener {
 	 * @param gameCode The ID of the game to load.
 	 */
 	final void loadGame(final int gameCode) {
-		grid.setupGame(gameCode);
+		grid.setupGame(gameCode, true);
 		TextView tv = (TextView)findViewById(R.id.clicksLabel);
 		tv.setTextColor(Color.WHITE);
 		tv.setText("Clicks 0");

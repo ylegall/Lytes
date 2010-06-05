@@ -22,10 +22,14 @@ public class Grid {
 		 * @return +1 if this tile was turned on,
 		 * -1 otherwise
 		 */
-		public int toggle() {
-			state = !state;
+		public int toggle(boolean animate) {
+			return set(!state, animate);
+		}
+		
+		public int set(boolean state, boolean animate) {
+			this.state = state;
 			
-			if(!isAnimating()) {
+			if(animate && !isAnimating()) {
 				alpha = (state ? MIN_ALPHA+1 : MAX_ALPHA-1);
 			}
 			
@@ -94,7 +98,7 @@ public class Grid {
 	 * @param gameCode A 3 digit positive
 	 * integer.
 	 */
-	public final void setupGame(final int gameCode) {
+	public final void setupGame(final int gameCode, boolean animate) {
 		
 		this.gameCode = gameCode;
 		this.totalClicks = 0;
@@ -108,22 +112,31 @@ public class Grid {
 		par = (par > 100)? 100 : par;
 		
 		// clear the board first
-		clear();
+		clear(animate);
 		
 		// do a series of random clicks
 		for(int i=0; i<par; i++) {
-			toggle(rand.nextInt(Grid.GRID_LENGTH), rand.nextInt(GRID_LENGTH));
+			toggle(rand.nextInt(Grid.GRID_LENGTH), rand.nextInt(GRID_LENGTH), animate);
 		}
 	}
 	
 	/**
 	 * clears the board.
 	 */
-	private final void clear() {
+	private final void clear(boolean animate) {
 		count = 0;
 		for(int i=0; i < GRID_LENGTH; i++) {
 			for(int j=0; j < GRID_LENGTH; j++) {
-				grid[i][j].state = false;
+				grid[i][j].set(false, animate);
+			}
+		}
+	}
+	
+	private final void flash(boolean animate) {
+		count = GRID_LENGTH * GRID_LENGTH;
+		for(int i=0; i < GRID_LENGTH; i++) {
+			for(int j=0; j < GRID_LENGTH; j++) {
+				grid[i][j].set(true, animate);
 			}
 		}
 	}
@@ -146,7 +159,7 @@ public class Grid {
 		if(i >= 0 && i < GRID_LENGTH) {
 			if(j >= 0 && j < GRID_LENGTH) {
 				totalClicks++;
-				toggle(i,j);
+				toggle(i,j, true);
 			}
 		}
 	}
@@ -157,30 +170,30 @@ public class Grid {
 	 * @param i the i index of the cell
 	 * @param j the j index of the cell
 	 */
-	private final void toggle(int i, int j) {
+	private final void toggle(int i, int j, boolean animate) {
 		
 		// toggle the grid at (i,j):
 		int max = GRID_LENGTH - 1;
-		count += grid[i][j].toggle();
+		count += grid[i][j].toggle(animate);
 		
 		// up
 		if(i > 0) {
-			count += grid[i-1][j].toggle();
+			count += grid[i-1][j].toggle(animate);
 		}
 		
 		// down
 		if(i < max) {
-			count += grid[i+1][j].toggle();
+			count += grid[i+1][j].toggle(animate);
 		}
 		
 		// left
 		if(j > 0) {
-			count += grid[i][j-1].toggle();
+			count += grid[i][j-1].toggle(animate);
 		}
 		
 		// right
 		if(j < max) {
-			count += grid[i][j+1].toggle();
+			count += grid[i][j+1].toggle(animate);
 		}
 	}
 	

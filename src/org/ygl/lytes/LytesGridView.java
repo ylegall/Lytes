@@ -29,7 +29,7 @@ public class LytesGridView extends View implements View.OnTouchListener {
 	static int XOFFSET = 0; //40;
 	static int YOFFSET = 0; //80;
 	static final String tag = "LYTES"; // TODO: remove
-	static int ANIM_SPEED = 50;
+	static int ANIM_SPEED = 25;
 	
 	public LytesGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
