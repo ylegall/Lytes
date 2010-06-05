@@ -30,11 +30,6 @@ public class LytesGridView extends View implements View.OnTouchListener {
 	static int YOFFSET = 0; //80;
 	static final String tag = "LYTES"; // TODO: remove
 	static int ANIM_SPEED = 50;
-
-//	private Canvas offscreenCanvas;
-//	private Bitmap offscreenImage;
-	
-	//static final String tag = "LYTES"; // TODO: remove
 	
 	public LytesGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -69,26 +64,8 @@ public class LytesGridView extends View implements View.OnTouchListener {
 		int size = Math.min(View.MeasureSpec.getSize(width), View.MeasureSpec.getSize(height));
 		TILE_SIZE = size / Grid.GRID_LENGTH;
 		setMeasuredDimension(size, size);
-		
-//        offscreenCanvas = new Canvas();
-//        offscreenImage = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888);
-//        offscreenCanvas.setBitmap(offscreenImage);
 	}
-	
-//    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-//        if (offscreenImage != null) {
-//        	offscreenImage .recycle();
-//        }
-//        offscreenCanvas = new Canvas();
-//        offscreenImage = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-//        offscreenCanvas.setBitmap(offscreenImage);
-//    }
-//    
-//    public void destroy() {
-//        if (offscreenImage != null) {
-//        	offscreenImage.recycle();
-//        }
-//    }
+
 	
     @Override
     public void onDraw(Canvas canvas) {
@@ -111,8 +88,9 @@ public class LytesGridView extends View implements View.OnTouchListener {
             		// Now update the alpha based on the destination state
             		// Increasing the number passed to the update will increase
             		// the speed of the animation.
-            		if (grid.grid[y][x].update(ANIM_SPEED))
+            		if (grid.grid[y][x].update(ANIM_SPEED)) {
             			redraw = true;
+            		}
             		
             	}
             	else if(grid.grid[y][x].state) {
@@ -128,12 +106,10 @@ public class LytesGridView extends View implements View.OnTouchListener {
         if(redraw)
         {
         	// Draw a visible indication of redraw for debug purposes.
-        	canvas.drawRect(0, 0, 10, 10, fullPaint);
-        	
+        	//canvas.drawRect(0, 0, 10, 10, fullPaint);        	
         	invalidate();
         }
 
-		//canvas.drawBitmap(offscreenImage, 0, 0, paint);
     }
     
 	@Override
@@ -148,21 +124,13 @@ public class LytesGridView extends View implements View.OnTouchListener {
 			y = y/TILE_SIZE;
 
 			grid.click(y, x);
-
-			//paint.setAlpha(255);
 			this.invalidate();
 			
-			// animation loop
-//			for(double i=0; i < 1; i += 0.01) {
-//				paint.setAlpha((int)(255*i));
-//				this.invalidate();
-//			}
-			
 			Activity lytesActivity = ((Activity)this.getContext());
-			TextView tv = ((TextView)lytesActivity.findViewById(R.id.clicksLabel));
-			tv.setText("Clicks " + grid.totalClicks);
+			TextView textView = ((TextView)lytesActivity.findViewById(R.id.clicksLabel));
+			textView.setText("Clicks " + grid.totalClicks);
 			if(grid.totalClicks > grid.par) {
-				tv.setTextColor(Color.RED);
+				textView.setTextColor(Color.RED);
 			}
 			
 			// check for win:

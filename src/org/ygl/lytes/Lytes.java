@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -49,8 +48,8 @@ public class Lytes extends Activity implements View.OnClickListener {
 		
 		// check if the select button pressed:
 		switch(view.getId()) {
-			case R.id.selectGameButton:
-				
+			
+			case R.id.selectGameButton:	
 				// get the game code in the textView:
 				int gameCode = 1;
 				TextView textField = (TextView) findViewById(R.id.selectTextField);
@@ -93,8 +92,6 @@ public class Lytes extends Activity implements View.OnClickListener {
 			case R.id.backButton:
 				changeContentView(R.layout.main);
 				break;
-			default:
-					// TODO: error code here
 		}
 	}
 	

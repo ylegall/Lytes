@@ -14,18 +14,37 @@ public class Grid {
 			alpha = MIN_ALPHA;
 		}
 		
+		/**
+		 * toggles the state of this tile,
+		 * and begins the animation state,
+		 * if the tile is not already being
+		 * animated.
+		 * @return +1 if this tile was turned on,
+		 * -1 otherwise
+		 */
 		public int toggle() {
 			state = !state;
 			
-			if(!isAnimating())
+			if(!isAnimating()) {
 				alpha = (state ? MIN_ALPHA+1 : MAX_ALPHA-1);
+			}
 			
 			return (state ? 1 : -1);
 		}
 		
+		/**
+		 * updates the alpha value for this <code>Tile</cdoe>.
+		 * @param dt the change in alpha
+		 * @return true if another animation will be
+		 * needed, false if the animation is done.
+		 */
 		public boolean update(int dt) {
-			if(!isAnimating())
+			
+			// continue animating if
+			// alhpa is between 0 and 255:
+			if(!isAnimating()) {
 				return false;
+			}
 			
 			alpha += (state ? dt : -dt);
 			if(alpha < MIN_ALPHA)
@@ -36,6 +55,11 @@ public class Grid {
 			return true;
 		}
 		
+		/**
+		 * Checks if this <code>Tile</cdoe> is in
+		 * the process of being animated.
+		 * @return 
+		 */
 		public boolean isAnimating() {
 			return (alpha > MIN_ALPHA && alpha < MAX_ALPHA);
 		}
@@ -44,8 +68,8 @@ public class Grid {
 	
 	/* package-private */
 	Tile[][] grid;
-	public static int MIN_ALPHA = 0;
-	public static int MAX_ALPHA = 255;
+	public static final int MIN_ALPHA = 0;
+	public static final int MAX_ALPHA = 255;
 	public static int GRID_LENGTH = 5;
 	int gameCode;		// the game ID
 	int par;
@@ -138,35 +162,25 @@ public class Grid {
 		// toggle the grid at (i,j):
 		int max = GRID_LENGTH - 1;
 		count += grid[i][j].toggle();
-		//count = (grid[i][j])? count - 1 : count + 1;
-		//grid[i][j] = !grid[i][j];
 		
 		// up
 		if(i > 0) {
 			count += grid[i-1][j].toggle();
-			//count = (grid[i-1][j])? count - 1 : count + 1;
-			//grid[i-1][j] = !grid[i-1][j].state;
 		}
 		
 		// down
 		if(i < max) {
 			count += grid[i+1][j].toggle();
-			//count = (grid[i+1][j])? count - 1 : count + 1;
-			//grid[i+1][j] = !grid[i+1][j];
 		}
 		
 		// left
 		if(j > 0) {
 			count += grid[i][j-1].toggle();
-			//count = (grid[i][j-1])? count - 1 : count + 1;
-			//grid[i][j-1] = !grid[i][j-1];
 		}
 		
 		// right
 		if(j < max) {
 			count += grid[i][j+1].toggle();
-			//count = (grid[i][j+1])? count - 1 : count + 1;
-			//grid[i][j+1] = !grid[i][j+1];
 		}
 	}
 	
