@@ -22,12 +22,13 @@ public class LytesGridView extends View implements View.OnTouchListener {
 
 	Grid grid;
 	//private int totalClicks;
-	private Paint paint;
+	private Paint fullPaint, partPaint;
 	private Bitmap onImage, offImage;
 	static int TILE_SIZE = 64;
 	static int XOFFSET = 0; //40;
 	static int YOFFSET = 0; //80;
 	static final String tag = "LYTES"; // TODO: remove
+	static int ANIM_SPEED = 50;
 	
 	public LytesGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -35,7 +36,8 @@ public class LytesGridView extends View implements View.OnTouchListener {
 		grid = Lytes.grid;
 		
 		// used for drawing:
-		paint = new Paint();
+		fullPaint = new Paint();
+		partPaint = new Paint();
 		
 		loadImages();
 	}
@@ -74,17 +76,44 @@ public class LytesGridView extends View implements View.OnTouchListener {
     	//Log.i(tag, "draw.");
 
         // TODO: find a better way to position grid
+    	boolean redraw = false;
         
         for (int x = 0 ; x < Grid.GRID_LENGTH; x++) {
         	float left = XOFFSET + x*TILE_SIZE;
             for (int y = 0 ; y < Grid.GRID_LENGTH; y++) {           	
             	float top = YOFFSET + y*TILE_SIZE;
-            	if(!grid.grid[y][x]) {
-            		canvas.drawBitmap(offImage, left, top, paint);
-            	} else {
-            		canvas.drawBitmap(onImage, left, top, paint);
+            	
+            	if(grid.grid[y][x].isAnimating()) {
+            		// offImage is always draw during animation to provide a background.
+            		canvas.drawBitmap(offImage, left, top, fullPaint);
+            		
+            		// draw onImage with opacity defined by the tiles alpha over top.
+            		partPaint.setAlpha(grid.grid[y][x].alpha);
+            		canvas.drawBitmap(onImage, left, top, partPaint);
+            		
+            		// Now update the alpha based on the destination state
+            		// Increasing the number passed to the update will increase
+            		// the speed of the animation.
+            		if (grid.grid[y][x].update(ANIM_SPEED))
+            			redraw = true;
+            		
+            	}
+            	else if(grid.grid[y][x].state) {
+            		canvas.drawBitmap(onImage, left, top, fullPaint);
+            	}
+            	else {
+            		canvas.drawBitmap(offImage, left, top, fullPaint);
             	}
             }
+        }
+        
+        // Immediately invalidate the view if a redraw is needed.
+        if(redraw)
+        {
+        	// Draw a visible indication of redraw for debug purposes.
+        	canvas.drawRect(0, 0, 10, 10, fullPaint);
+        	
+        	invalidate();
         }
     }
     
