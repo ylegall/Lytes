@@ -109,7 +109,7 @@ public class Grid {
 		// to set up the game:
 		Random rand = new Random(gameCode);
 		par = gameCode/4 + 1;
-		par = (par > 100)? 100 : par;
+		par = (par > 50)? 50 : par;
 		
 		// clear the board first
 		clear(animate);
@@ -132,11 +132,12 @@ public class Grid {
 		}
 	}
 	
-	private final void flash(boolean animate) {
+	/* package private */
+	final void setAll(boolean on, boolean animate) {
 		count = GRID_LENGTH * GRID_LENGTH;
 		for(int i=0; i < GRID_LENGTH; i++) {
 			for(int j=0; j < GRID_LENGTH; j++) {
-				grid[i][j].set(true, animate);
+				grid[i][j].set(on, animate);
 			}
 		}
 	}

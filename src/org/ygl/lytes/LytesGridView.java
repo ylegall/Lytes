@@ -137,6 +137,12 @@ public class LytesGridView extends View implements View.OnTouchListener {
 			if(grid.isEmpty()) {
 				
 				Context context = this.getContext();
+				
+				grid.setAll(false, true);
+				invalidate();
+//				grid.setAll(true, true);
+//				invalidate();
+				
 				String winText = String.format("You have won level %d!", grid.gameCode);
 				Toast.makeText(context, winText, Toast.LENGTH_SHORT).show();
 				
