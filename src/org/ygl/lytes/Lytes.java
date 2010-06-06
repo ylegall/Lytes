@@ -3,11 +3,13 @@ package org.ygl.lytes;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 public class Lytes extends Activity implements View.OnClickListener {
@@ -72,6 +74,10 @@ public class Lytes extends Activity implements View.OnClickListener {
 					return;
 				}
 				
+				// Force the soft keyboard to hide when game starts.
+				InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(textField.getWindowToken(), 0);
+
 				grid.setupGame(gameCode, false);
 				changeContentView(R.layout.game);
 				((TextView)findViewById(R.id.parLabel)).setText("Par "+grid.par);

@@ -40,6 +40,7 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:background="@android:drawable/editbox_background"
+	        android:numeric="integer"
 	        android:maxLength="3"
 	        />
 		
