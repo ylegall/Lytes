@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -47,15 +48,15 @@ public class LytesGridView extends View implements View.OnTouchListener {
 		
 		Resources r = this.getContext().getResources();
 		Drawable d = r.getDrawable(R.drawable.on);
-		onImage = Bitmap.createBitmap(TILE_SIZE, TILE_SIZE, Bitmap.Config.ARGB_8888);
+		onImage = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(onImage);
-        d.setBounds(0, 0, TILE_SIZE, TILE_SIZE);
+        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
         d.draw(canvas);
         
 		d = r.getDrawable(R.drawable.off);
-		offImage = Bitmap.createBitmap(TILE_SIZE, TILE_SIZE, Bitmap.Config.ARGB_8888);
+		offImage = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         canvas = new Canvas(offImage);
-        d.setBounds(0, 0, TILE_SIZE, TILE_SIZE);
+        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
         d.draw(canvas);
 	}
 	
@@ -71,19 +72,21 @@ public class LytesGridView extends View implements View.OnTouchListener {
     public void onDraw(Canvas canvas) {
 
     	boolean redraw = false;
+    	Rect tileRect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
         
         for (int x = 0 ; x < Grid.GRID_LENGTH; x++) {
-        	float left = XOFFSET + x*TILE_SIZE;
+        	int left = XOFFSET + x*TILE_SIZE;
             for (int y = 0 ; y < Grid.GRID_LENGTH; y++) {           	
-            	float top = YOFFSET + y*TILE_SIZE;
+            	int top = YOFFSET + y*TILE_SIZE;
+            	tileRect.offsetTo(left, top);
             	
             	if(grid.grid[y][x].isAnimating()) {
             		// offImage is always draw during animation to provide a background.
-            		canvas.drawBitmap(offImage, left, top, fullPaint);
+            		canvas.drawBitmap(offImage, null, tileRect, fullPaint);
             		
             		// draw onImage with opacity defined by the tiles alpha over top.
             		partPaint.setAlpha(grid.grid[y][x].alpha);
-            		canvas.drawBitmap(onImage, left, top, partPaint);
+            		canvas.drawBitmap(onImage, null, tileRect, partPaint);
             		
             		// Now update the alpha based on the destination state
             		// Increasing the number passed to the update will increase
@@ -94,10 +97,10 @@ public class LytesGridView extends View implements View.OnTouchListener {
             		
             	}
             	else if(grid.grid[y][x].state) {
-            		canvas.drawBitmap(onImage, left, top, fullPaint);
+            		canvas.drawBitmap(onImage, null, tileRect, fullPaint);
             	}
             	else {
-            		canvas.drawBitmap(offImage, left, top, fullPaint);
+            		canvas.drawBitmap(offImage, null, tileRect, fullPaint);
             	}
             }
         }
