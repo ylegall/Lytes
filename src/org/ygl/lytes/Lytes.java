@@ -158,11 +158,10 @@ public class Lytes extends Activity implements View.OnClickListener {
 
         SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
         highestLevel = prefs.getInt("highestLevel", INVALID_GAME_CODE);
-        
-//        if(gameCode != INVALID_GAME_CODE) {
-//        	changeContentView(R.layout.game);
-//        	loadGame(gameCode);
-//        }
+        if(highestLevel != INVALID_GAME_CODE) {
+        	changeContentView(R.layout.game);
+        	loadGame(highestLevel);
+        }
     }
 
     /**
