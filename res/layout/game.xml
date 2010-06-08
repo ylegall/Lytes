@@ -23,6 +23,7 @@
 		android:layout_marginTop="10px"
 		android:layout_marginLeft="10px"
 		android:clickable="true"
+		android:background="@drawable/but"
 		/>
 		
 	<Button android:text="Back"
@@ -33,6 +34,7 @@
 		android:textStyle="bold"
 		android:id="@+id/backButton"
 		android:clickable="true"
+		android:background="@drawable/but"
 		/>
 	<TextView
 		android:id="@+id/levelLabel"
