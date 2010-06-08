@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.TextView;
 
 public class Lytes extends Activity implements View.OnClickListener {
@@ -42,6 +43,17 @@ public class Lytes extends Activity implements View.OnClickListener {
     		this.setContentView(R.layout.main);
             findViewById(R.id.newGameButton).setOnClickListener(this);
             findViewById(R.id.selectGameButton).setOnClickListener(this);
+            findViewById(R.id.exitGameButton).setOnClickListener(this);
+    		
+            // Only show the continue game button when a game is in progess.
+    		Button contGame = (Button)findViewById(R.id.contGameButton);
+    		contGame.setOnClickListener(this);
+    		if(grid.gameCode != INVALID_GAME_CODE) {
+    			contGame.setVisibility(View.VISIBLE);
+    		}
+    		else {
+    			contGame.setVisibility(View.GONE);
+    		}
     	}
     }
     
@@ -89,6 +101,14 @@ public class Lytes extends Activity implements View.OnClickListener {
 				// start a new game:
 				changeContentView(R.layout.game);
 				((TextView)findViewById(R.id.levelLabel)).setText("Level 0");
+				break;
+				
+			case R.id.contGameButton:
+				changeContentView(R.layout.game);
+				break;
+				
+			case R.id.exitGameButton:
+				finish();
 				break;
 				
 			case R.id.resetButton:

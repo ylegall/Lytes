@@ -1,48 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:orientation="vertical"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
 	android:gravity="center"
 	android:background="#333333">
 	
-	<ImageView
-		android:id="@+id/LOGO"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:src="@drawable/lytes"
-		android:gravity="center"
-		/>
-	<Button
-		android:id="@+id/newGameButton"
-		android:text="New Game" 
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:clickable="true"/>
-
 	<LinearLayout
-		android:id="@+id/LinearLayout01"
+		android:orientation="vertical"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:orientation="horizontal">
+		android:gravity="center">
+	
+		<ImageView
+			android:id="@+id/LOGO"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:src="@drawable/lytes"
+			android:gravity="center"/>
+			
+		<Button
+			android:id="@+id/contGameButton"
+			android:text="Continue" 
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:textStyle="bold"
+	        	android:clickable="true"/>
+		<Button
+			android:id="@+id/newGameButton"
+			android:text="New Game" 
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:textStyle="bold"
+	        	android:clickable="true"/>
+	
+		<LinearLayout
+			android:id="@+id/LinearLayout01"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:gravity="center"
+			android:orientation="horizontal">
+			
+			<Button
+				android:id="@+id/selectGameButton"
+				android:text="Select Game"
+		        	android:layout_width="fill_parent"
+		        	android:layout_height="wrap_content"
+		        	android:layout_weight="1"
+				android:textStyle="bold"
+				android:clickable="true"/>
+		    	<EditText
+		        	android:id="@+id/selectTextField"
+		        	android:layout_width="fill_parent"
+		        	android:layout_height="wrap_content"
+		        	android:layout_weight="3"
+		        	android:background="@android:drawable/editbox_background"
+		        	android:numeric="integer"
+		        	android:maxLength="3"/>
+			
+		</LinearLayout>
 		
 		<Button
-			android:id="@+id/selectGameButton"
-			android:text="Select Game"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-			android:textStyle="bold"
-			android:clickable="true"/>
-	    <EditText
-	        android:id="@+id/selectTextField"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:background="@android:drawable/editbox_background"
-	        android:numeric="integer"
-	        android:maxLength="3"
-	        />
-		
-		</LinearLayout>
+			android:id="@+id/exitGameButton"
+			android:text="Exit" 
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:textStyle="bold"
+	        	android:clickable="true"/>
+        	
+	</LinearLayout>
 </LinearLayout>
