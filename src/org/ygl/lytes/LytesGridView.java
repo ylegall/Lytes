@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
@@ -146,8 +147,10 @@ public class LytesGridView extends View implements View.OnTouchListener {
 //				grid.setAll(true, true);
 //				invalidate();
 				
-				String winText = String.format("You have won level %d!", grid.gameCode);
-				Toast.makeText(context, winText, Toast.LENGTH_SHORT).show();
+				String winText = String.format("level %d completed!", grid.gameCode);
+				Toast toast = Toast.makeText(context, winText, Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+				toast.show();
 				
 				// show the next board and update the lables:
 				((Lytes)context).loadGame(grid.gameCode + 1);
