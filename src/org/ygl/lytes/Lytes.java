@@ -19,6 +19,8 @@ public class Lytes extends Activity implements View.OnClickListener {
 	public static final String ICICLE_KEY = "lytes";
 	public static final int INVALID_GAME_CODE = 0;
 	public static final int WIN_GAME = 1;
+	
+	private static int highestLevel;
 
 	/**
 	 * Called when the activity is first created. 
@@ -104,12 +106,10 @@ public class Lytes extends Activity implements View.OnClickListener {
 				break;
 				
 			case R.id.continueButton:
-		        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
-		        gameCode = prefs.getInt("gameCode", INVALID_GAME_CODE);
-		        if(gameCode != INVALID_GAME_CODE) {
-		        	changeContentView(R.layout.game);
-		        	loadGame(gameCode);
-		        }
+//		        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
+//		        gameCode = prefs.getInt("highestLevel", INVALID_GAME_CODE);
+				changeContentView(R.layout.game);
+				loadGame(highestLevel);
 				break;
 				
 			case R.id.exitGameButton:
@@ -141,6 +141,12 @@ public class Lytes extends Activity implements View.OnClickListener {
 		findViewById(R.id.lytesGridView).invalidate();
 	}
 	
+	final static void setHighestLevel(final int level) {
+		if(level > highestLevel) {
+			highestLevel = level;
+		}
+	}
+	
     /**
      * Upon being resumed we can retrieve the current state. This allows us
      * to update the state if it was changed at any time while paused. 
@@ -150,8 +156,9 @@ public class Lytes extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
 
-//        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
-//        int gameCode = prefs.getInt("gameCode", INVALID_GAME_CODE);
+        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
+        highestLevel = prefs.getInt("highestLevel", INVALID_GAME_CODE);
+        
 //        if(gameCode != INVALID_GAME_CODE) {
 //        	changeContentView(R.layout.game);
 //        	loadGame(gameCode);
@@ -168,7 +175,7 @@ public class Lytes extends Activity implements View.OnClickListener {
         super.onPause();
 
         SharedPreferences.Editor editor = getPreferences(Activity.MODE_PRIVATE).edit();
-        editor.putInt("gameCode", grid.gameCode);
+        editor.putInt("highestLevel", highestLevel);
         editor.commit();
     }
 	
