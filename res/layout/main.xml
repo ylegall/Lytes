@@ -24,14 +24,16 @@
 	        	android:layout_width="fill_parent"
 	        	android:layout_height="wrap_content"
 	        	android:textStyle="bold"
-	        	android:clickable="true"/>
+	        	android:clickable="true"
+	        	android:background="@drawable/but"/>
 		<Button
 			android:id="@+id/newGameButton"
 			android:text="New Game" 
 	        	android:layout_width="fill_parent"
 	        	android:layout_height="wrap_content"
 	        	android:textStyle="bold"
-	        	android:clickable="true"/>
+	        	android:clickable="true"
+	        	android:background="@drawable/but"/>
 	
 		<LinearLayout
 			android:id="@+id/LinearLayout01"
@@ -47,7 +49,8 @@
 		        	android:layout_height="wrap_content"
 		        	android:layout_weight="1"
 				android:textStyle="bold"
-				android:clickable="true"/>
+				android:clickable="true"
+				android:background="@drawable/but"/>
 		    	<EditText
 		        	android:id="@+id/selectTextField"
 		        	android:layout_width="fill_parent"
@@ -65,7 +68,8 @@
 	        	android:layout_width="fill_parent"
 	        	android:layout_height="wrap_content"
 	        	android:textStyle="bold"
-	        	android:clickable="true"/>
+	        	android:clickable="true"
+	        	android:background="@drawable/but"/>
         	
 	</LinearLayout>
 </LinearLayout>
