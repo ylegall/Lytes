@@ -23,6 +23,7 @@
 		android:layout_toLeftOf="@id/lytesGridView"
 		android:layout_centerVertical="true"
 		android:clickable="true"
+		android:background="@drawable/but"
 		/>
 		
 	<Button android:id="@+id/backButton"
@@ -34,6 +35,7 @@
 		android:layout_below="@id/resetButton"
 		android:textStyle="bold"
 		android:clickable="true"
+		android:background="@drawable/but"
 		/>
 	<TextView
 		android:id="@+id/levelLabel"
