@@ -46,7 +46,7 @@ public class Lytes extends Activity implements View.OnClickListener {
             findViewById(R.id.exitGameButton).setOnClickListener(this);
     		
             // Only show the continue game button when a game is in progess.
-    		Button contGame = (Button)findViewById(R.id.contGameButton);
+    		Button contGame = (Button)findViewById(R.id.continueButton);
     		contGame.setOnClickListener(this);
     		if(grid.gameCode != INVALID_GAME_CODE) {
     			contGame.setVisibility(View.VISIBLE);
@@ -103,8 +103,13 @@ public class Lytes extends Activity implements View.OnClickListener {
 				((TextView)findViewById(R.id.levelLabel)).setText("Level 0");
 				break;
 				
-			case R.id.contGameButton:
-				changeContentView(R.layout.game);
+			case R.id.continueButton:
+		        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
+		        gameCode = prefs.getInt("gameCode", INVALID_GAME_CODE);
+		        if(gameCode != INVALID_GAME_CODE) {
+		        	changeContentView(R.layout.game);
+		        	loadGame(gameCode);
+		        }
 				break;
 				
 			case R.id.exitGameButton:
@@ -144,12 +149,12 @@ public class Lytes extends Activity implements View.OnClickListener {
     protected void onResume() {
         super.onResume();
 
-        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
-        int gameCode = prefs.getInt("gameCode", INVALID_GAME_CODE);
-        if(gameCode != INVALID_GAME_CODE) {
-        	changeContentView(R.layout.game);
-        	loadGame(gameCode);
-        }
+//        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
+//        int gameCode = prefs.getInt("gameCode", INVALID_GAME_CODE);
+//        if(gameCode != INVALID_GAME_CODE) {
+//        	changeContentView(R.layout.game);
+//        	loadGame(gameCode);
+//        }
     }
 
     /**
