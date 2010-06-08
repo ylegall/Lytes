@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 public class Lytes extends Activity implements View.OnClickListener {
 	
-	static Grid grid;
+	static SquareGrid grid;
 	public static final String ICICLE_KEY = "lytes";
 	public static final int INVALID_GAME_CODE = 0;
 	public static final int WIN_GAME = 1;
@@ -29,7 +29,7 @@ public class Lytes extends Activity implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        grid = new Grid(5);
+        grid = new SquareGrid(5);
         changeContentView(R.layout.main);
     }
     

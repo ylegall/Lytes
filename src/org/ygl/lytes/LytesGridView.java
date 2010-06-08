@@ -23,7 +23,7 @@ import android.widget.Toast;
  */
 public class LytesGridView extends View implements View.OnTouchListener {
 
-	Grid grid;
+	SquareGrid grid;
 
 	private Paint fullPaint, partPaint;
 	private Bitmap onImage, offImage;
@@ -64,7 +64,7 @@ public class LytesGridView extends View implements View.OnTouchListener {
 	@Override
 	public void onMeasure(final int width, final int height) {
 		int size = Math.min(View.MeasureSpec.getSize(width), View.MeasureSpec.getSize(height));
-		TILE_SIZE = size / Grid.GRID_LENGTH;
+		TILE_SIZE = size / SquareGrid.GRID_LENGTH;
 		setMeasuredDimension(size, size);
 	}
 
@@ -75,9 +75,9 @@ public class LytesGridView extends View implements View.OnTouchListener {
     	boolean redraw = false;
     	Rect tileRect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
         
-        for (int x = 0 ; x < Grid.GRID_LENGTH; x++) {
+        for (int x = 0 ; x < SquareGrid.GRID_LENGTH; x++) {
         	int left = XOFFSET + x*TILE_SIZE;
-            for (int y = 0 ; y < Grid.GRID_LENGTH; y++) {           	
+            for (int y = 0 ; y < SquareGrid.GRID_LENGTH; y++) {           	
             	int top = YOFFSET + y*TILE_SIZE;
             	tileRect.offsetTo(left, top);
             	

@@ -2,33 +2,12 @@ package org.ygl.lytes;
 
 import java.util.Random;
 
-/**
- * This will be the base class for the different grid types. 
- * It should contain fields and methods that are common to
- * all types of grids, like hex, triange, sqaure, etc.
- *
- */
-public abstract class Grid {
+public class SquareGrid {
 	
-	public static final int MIN_ALPHA = 0;
-	public static final int MAX_ALPHA = 255;
-	public static int GRID_LENGTH = 5;
-	
-	protected int gameCode;		// the game ID
-	protected int par;			// number of clicks the user gets
-	protected int totalClicks;	// total usre clicks so far
-	protected int count;		// the number of lights currently on
-
-	protected Tile[][] grid;	// the array of tiles:
-	
-	/**
-	 * 
-	 * Inner class representing an individual tile.
-	 * Tiles have a on/off state as well as an alpha value
-	 */
-	private class Tile {
-		boolean state;
-		int alpha;
+	public class Tile {
+		
+		public boolean state;
+		public int alpha;
 		
 		public Tile() {
 			state = false;
@@ -47,18 +26,13 @@ public abstract class Grid {
 			return set(!state, animate);
 		}
 		
-		/**
-		 * Sets this tile to the 
-		 * @param state true to "turn on" the tile
-		 * @param animate true to begin the animation
-		 * @return 1 if the tile has been turned on, false otherwise
-		 * (used for updating the count of lights on).
-		 */
 		public int set(boolean state, boolean animate) {
 			this.state = state;
+			
 			if(animate && !isAnimating()) {
 				alpha = (state ? MIN_ALPHA+1 : MAX_ALPHA-1);
 			}
+			
 			return (state ? 1 : -1);
 		}
 		
@@ -87,12 +61,35 @@ public abstract class Grid {
 		
 		/**
 		 * Checks if this <code>Tile</cdoe> is in
-		 * the process of being animated.
+		 * the process of being animatedafter.
 		 * @return 
 		 */
 		public boolean isAnimating() {
 			return (alpha > MIN_ALPHA && alpha < MAX_ALPHA);
 		}
+	}
+	
+	
+	/* package-private */
+	Tile[][] grid;
+	public static final int MIN_ALPHA = 0;
+	public static final int MAX_ALPHA = 255;
+	public static int GRID_LENGTH = 5;
+	int gameCode;		// the game ID
+	int par;
+	int totalClicks;
+	private int count;	// the number of lights currently on
+	
+	public SquareGrid(final int gridLength) {
+		GRID_LENGTH = gridLength;
+		// create the matrix:
+		grid = new Tile[GRID_LENGTH][GRID_LENGTH];
+		for (int i=0; i<grid.length; i++) {
+			grid[i] = new Tile[GRID_LENGTH];
+			for (int j=0; j<GRID_LENGTH; j++)
+				grid[i][j] = new Tile();
+		}
+		gameCode = 1;
 	}
 	
 	/**
@@ -101,7 +98,7 @@ public abstract class Grid {
 	 * @param gameCode A 3 digit positive
 	 * integer.
 	 */
-	public final void setupGame(final int gameCode, final boolean animate) {
+	public final void setupGame(final int gameCode, boolean animate) {
 		
 		this.gameCode = gameCode;
 		this.totalClicks = 0;
@@ -112,7 +109,7 @@ public abstract class Grid {
 		// to set up the game:
 		Random rand = new Random(gameCode);
 		par = gameCode/4 + 1;
-		if(par > 50) { par = 50; }
+		par = (par > 50)? 50 : par;
 		
 		// clear the board first
 		clear(animate);
@@ -122,19 +119,11 @@ public abstract class Grid {
 			toggle(rand.nextInt(SquareGrid.GRID_LENGTH), rand.nextInt(GRID_LENGTH), animate);
 		}
 	}
-
-	/**
-	 * toggles the cell at the given index,
-	 * as well as its 4 neighbors.
-	 * @param i the i index of the cell
-	 * @param j the j index of the cell
-	 */
-	protected abstract void toggle(int i, int j, boolean animate);
-
+	
 	/**
 	 * clears the board.
 	 */
-	protected final void clear(final boolean animate) {
+	private final void clear(boolean animate) {
 		setAll(false, animate);
 	}
 	
@@ -155,5 +144,54 @@ public abstract class Grid {
 	public final boolean isEmpty() {
 		return this.count == 0;
 	}
+	
+	/**
+	 * clicks the cell at the given index,
+	 * toggling itself and the 4 neighbors.
+	 * @param i the i index of the cell
+	 * @param j the j index of the cell
+	 */
+	public void click(int i, int j) {
+		if(i >= 0 && i < GRID_LENGTH) {
+			if(j >= 0 && j < GRID_LENGTH) {
+				totalClicks++;
+				toggle(i,j, true);
+			}
+		}
+	}
+	
+	/**
+	 * toggles the cell at the given index,
+	 * as well as its 4 neighbors.
+	 * @param i the i index of the cell
+	 * @param j the j index of the cell
+	 */
+	private final void toggle(int i, int j, boolean animate) {
+		
+		// toggle the grid at (i,j):
+		int max = GRID_LENGTH - 1;
+		count += grid[i][j].toggle(animate);
+		
+		// up
+		if(i > 0) {
+			count += grid[i-1][j].toggle(animate);
+		}
+		
+		// down
+		if(i < max) {
+			count += grid[i+1][j].toggle(animate);
+		}
+		
+		// left
+		if(j > 0) {
+			count += grid[i][j-1].toggle(animate);
+		}
+		
+		// right
+		if(j < max) {
+			count += grid[i][j+1].toggle(animate);
+		}
+	}
+	
 	
 }
