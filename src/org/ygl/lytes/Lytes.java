@@ -142,8 +142,9 @@ public class Lytes extends Activity implements View.OnClickListener {
 	}
 	
     /**
-     * Upon being resumed we can retrieve the current state.  This allows us
-     * to update the state if it was changed at any time while paused.
+     * Upon being resumed we can retrieve the current state. This allows us
+     * to update the state if it was changed at any time while paused. 
+     * I tihnk this is also called when the activity is started.
      */
     @Override
     protected void onResume() {
@@ -159,7 +160,8 @@ public class Lytes extends Activity implements View.OnClickListener {
 
     /**
      * Any time we are paused we need to save away the current state, so it
-     * will be restored correctly when we are resumed.
+     * will be restored correctly when we are resumed. I tihnk this is also
+     * called when the activity is closed.
      */
     @Override
     protected void onPause() {
