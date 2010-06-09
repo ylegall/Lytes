@@ -1,197 +1,108 @@
 package org.ygl.lytes;
 
-import java.util.Random;
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Point;
+import android.graphics.drawable.Drawable;
 
-public class SquareGrid {
+public class SquareGrid extends Grid {
 	
-	public class Tile {
-		
-		public boolean state;
-		public int alpha;
-		
-		public Tile() {
-			state = false;
-			alpha = MIN_ALPHA;
-		}
-		
-		/**
-		 * toggles the state of this tile,
-		 * and begins the animation state,
-		 * if the tile is not already being
-		 * animated.
-		 * @return +1 if this tile was turned on,
-		 * -1 otherwise
-		 */
-		public int toggle(boolean animate) {
-			return set(!state, animate);
-		}
-		
-		public int set(boolean state, boolean animate) {
-			this.state = state;
-			
-			if(animate && !isAnimating()) {
-				alpha = (state ? MIN_ALPHA+1 : MAX_ALPHA-1);
-			}
-			
-			return (state ? 1 : -1);
-		}
-		
-		/**
-		 * updates the alpha value for this <code>Tile</cdoe>.
-		 * @param dt the change in alpha
-		 * @return true if another animation will be
-		 * needed, false if the animation is done.
-		 */
-		public boolean update(int dt) {
-			
-			// continue animating if
-			// alhpa is between 0 and 255:
-			if(!isAnimating()) {
-				return false;
-			}
-			
-			alpha += (state ? dt : -dt);
-			if(alpha < MIN_ALPHA)
-				alpha = MIN_ALPHA;
-			else if(alpha > MAX_ALPHA)
-				alpha = MAX_ALPHA;
-			
-			return true;
-		}
-		
-		/**
-		 * Checks if this <code>Tile</cdoe> is in
-		 * the process of being animatedafter.
-		 * @return 
-		 */
-		public boolean isAnimating() {
-			return (alpha > MIN_ALPHA && alpha < MAX_ALPHA);
-		}
-	}
-	
-	
-	/* package-private */
-	Tile[][] grid;
-	public static final int MIN_ALPHA = 0;
-	public static final int MAX_ALPHA = 255;
-	public static int GRID_LENGTH = 5;
-	int gameCode;		// the game ID
-	int par;
-	int totalClicks;
-	private int count;	// the number of lights currently on
+	private final int MAX_NEIGHBORS = 4;
 	
 	public SquareGrid(final int gridLength) {
 		GRID_LENGTH = gridLength;
 		// create the matrix:
 		grid = new Tile[GRID_LENGTH][GRID_LENGTH];
-		for (int i=0; i<grid.length; i++) {
-			grid[i] = new Tile[GRID_LENGTH];
-			for (int j=0; j<GRID_LENGTH; j++)
-				grid[i][j] = new Tile();
+		for (int j=0; j<GRID_LENGTH; j++) {
+			grid[j] = new Tile[GRID_LENGTH];
+			for (int i=0; i<GRID_LENGTH; i++)
+				grid[j][i] = new Tile();
 		}
 		gameCode = 1;
 	}
 	
 	/**
-	 * Initializes a game configuration
-	 * based on a game code.
-	 * @param gameCode A 3 digit positive
-	 * integer.
+	 * Loads tile images relevant to this grid.
+	 * @param context
 	 */
-	public final void setupGame(final int gameCode, boolean animate) {
-		
-		this.gameCode = gameCode;
-		this.totalClicks = 0;
-		
-		// create a random number generator
-		// and calculate the total number
-		// of 'clicks' that we will use
-		// to set up the game:
-		Random rand = new Random(gameCode);
-		par = gameCode/4 + 1;
-		par = (par > 50)? 50 : par;
-		
-		// clear the board first
-		clear(animate);
-		
-		// do a series of random clicks
-		for(int i=0; i<par; i++) {
-			toggle(rand.nextInt(SquareGrid.GRID_LENGTH), rand.nextInt(GRID_LENGTH), animate);
-		}
+	public void loadImages(Context context)
+	{
+		Resources r = context.getResources();
+		Drawable d = r.getDrawable(R.drawable.on);
+		onImage = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(onImage);
+        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        d.draw(canvas);
+        
+		d = r.getDrawable(R.drawable.off);
+		offImage = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(offImage);
+        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+        d.draw(canvas);
 	}
 	
 	/**
-	 * clears the board.
+	 * Returns a list of all neighboring tiles
 	 */
-	private final void clear(boolean animate) {
-		setAll(false, animate);
-	}
-	
-	/* package private */
-	final void setAll(boolean on, boolean animate) {
-		count = (on)? GRID_LENGTH * GRID_LENGTH : 0;
-		for(int i=0; i < GRID_LENGTH; i++) {
-			for(int j=0; j < GRID_LENGTH; j++) {
-				grid[i][j].set(on, animate);
-			}
-		}
-	}
-	
-	/**
-	 * Checks if the board has any lights turned on.
-	 * @return true if there are no lights on.
-	 */
-	public final boolean isEmpty() {
-		return this.count == 0;
-	}
-	
-	/**
-	 * clicks the cell at the given index,
-	 * toggling itself and the 4 neighbors.
-	 * @param i the i index of the cell
-	 * @param j the j index of the cell
-	 */
-	public void click(int i, int j) {
-		if(i >= 0 && i < GRID_LENGTH) {
-			if(j >= 0 && j < GRID_LENGTH) {
-				totalClicks++;
-				toggle(i,j, true);
-			}
-		}
-	}
-	
-	/**
-	 * toggles the cell at the given index,
-	 * as well as its 4 neighbors.
-	 * @param i the i index of the cell
-	 * @param j the j index of the cell
-	 */
-	private final void toggle(int i, int j, boolean animate) {
+	protected Tile[] getNeighborTiles(int i, int j)
+	{
+		// Sanity checks
+		if (j < 0 || j >= grid.length || i < 0 || i >= grid[j].length)
+			return null;
 		
-		// toggle the grid at (i,j):
-		int max = GRID_LENGTH - 1;
-		count += grid[i][j].toggle(animate);
+		// Always allocate list for max neighbors. If tile is invaild, list entries will be null.
+		Tile[] neighbors = new Tile[MAX_NEIGHBORS];
+		int neighIdx = 0;
+		int max = GRID_LENGTH-1;
 		
 		// up
-		if(i > 0) {
-			count += grid[i-1][j].toggle(animate);
+		if(j > 0) {
+			neighbors[neighIdx++] = grid[j-1][i];
 		}
 		
 		// down
-		if(i < max) {
-			count += grid[i+1][j].toggle(animate);
+		if(j < max) {
+			neighbors[neighIdx++] = grid[j+1][i];
 		}
 		
 		// left
-		if(j > 0) {
-			count += grid[i][j-1].toggle(animate);
+		if(i > 0) {
+			neighbors[neighIdx++] = grid[j][i-1];
 		}
 		
 		// right
-		if(j < max) {
-			count += grid[i][j+1].toggle(animate);
+		if(i < max) {
+			neighbors[neighIdx++] = grid[j][i+1];
 		}
+		
+		// Nullify any remaining neighbors
+		for(; neighIdx < MAX_NEIGHBORS; neighIdx++)
+			neighbors[neighIdx] = null;
+		
+		return neighbors;
 	}
 	
+	public void getTilePos(int i, int j, Point pos)
+	{
+		// TODO: Should these constants location be changed?
+		int tile_size = LytesGridView.TILE_SIZE;
+		
+		pos.x = i*tile_size;
+		pos.y = j*tile_size;
+	}
 	
+	protected boolean touchTile(int mouse_x, int mouse_y)
+	{
+		mouse_x /= LytesGridView.TILE_SIZE;
+		mouse_y /= LytesGridView.TILE_SIZE;
+		
+		if (mouse_x < GRID_LENGTH && mouse_y < GRID_LENGTH) {
+			toggle(mouse_x, mouse_y, true);
+			return true;
+		}
+		
+		return false;
+	}
 }
