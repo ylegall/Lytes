@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -23,13 +24,12 @@ import android.widget.Toast;
  */
 public class LytesGridView extends View implements View.OnTouchListener {
 
-	SquareGrid grid;
+	Grid grid;
 
 	private Paint fullPaint, partPaint;
-	private Bitmap onImage, offImage;
 	static int TILE_SIZE = 64;
-	static int XOFFSET = 0; //40;
-	static int YOFFSET = 0; //80;
+	static int XOFFSET = 0; // TODO: remove
+	static int YOFFSET = 0; // TODO: remove
 	static final String tag = "LYTES"; // TODO: remove
 	static int ANIM_SPEED = 25;
 	
@@ -42,23 +42,7 @@ public class LytesGridView extends View implements View.OnTouchListener {
 		fullPaint = new Paint();
 		partPaint = new Paint();
 		
-		loadImages();
-	}
-	
-	private final void loadImages() {
-		
-		Resources r = this.getContext().getResources();
-		Drawable d = r.getDrawable(R.drawable.on);
-		onImage = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(onImage);
-        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-        d.draw(canvas);
-        
-		d = r.getDrawable(R.drawable.off);
-		offImage = Bitmap.createBitmap(d.getIntrinsicWidth(), d.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(offImage);
-        d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-        d.draw(canvas);
+		grid.loadImages(context);
 	}
 	
 	@Override
@@ -74,20 +58,20 @@ public class LytesGridView extends View implements View.OnTouchListener {
 
     	boolean redraw = false;
     	Rect tileRect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
+    	Point pos = new Point();
         
-        for (int x = 0 ; x < SquareGrid.GRID_LENGTH; x++) {
-        	int left = XOFFSET + x*TILE_SIZE;
-            for (int y = 0 ; y < SquareGrid.GRID_LENGTH; y++) {           	
-            	int top = YOFFSET + y*TILE_SIZE;
-            	tileRect.offsetTo(left, top);
+        for (int y = 0 ; y < grid.grid.length; y++) {
+            for (int x = 0 ; x < grid.grid[y].length; x++) {
+            	grid.getTilePos(x, y, pos);
+            	tileRect.offsetTo(pos.x, pos.y);
             	
             	if(grid.grid[y][x].isAnimating()) {
             		// offImage is always draw during animation to provide a background.
-            		canvas.drawBitmap(offImage, null, tileRect, fullPaint);
+            		canvas.drawBitmap(grid.offImage, null, tileRect, fullPaint);
             		
             		// draw onImage with opacity defined by the tiles alpha over top.
             		partPaint.setAlpha(grid.grid[y][x].alpha);
-            		canvas.drawBitmap(onImage, null, tileRect, partPaint);
+            		canvas.drawBitmap(grid.onImage, null, tileRect, partPaint);
             		
             		// Now update the alpha based on the destination state
             		// Increasing the number passed to the update will increase
@@ -98,10 +82,10 @@ public class LytesGridView extends View implements View.OnTouchListener {
             		
             	}
             	else if(grid.grid[y][x].state) {
-            		canvas.drawBitmap(onImage, null, tileRect, fullPaint);
+            		canvas.drawBitmap(grid.onImage, null, tileRect, fullPaint);
             	}
             	else {
-            		canvas.drawBitmap(offImage, null, tileRect, fullPaint);
+            		canvas.drawBitmap(grid.offImage, null, tileRect, fullPaint);
             	}
             }
         }
@@ -124,10 +108,13 @@ public class LytesGridView extends View implements View.OnTouchListener {
 			int y = (int)event.getY();
 			x -= XOFFSET;
 			y -= YOFFSET;
-			x = x/TILE_SIZE;
-			y = y/TILE_SIZE;
-
-			grid.click(y, x);
+			
+			if(!grid.touchTile(x, y)) {
+				
+				// no tile touched
+				return true;
+			}
+			
 			this.invalidate();
 			
 			Activity lytesActivity = ((Activity)this.getContext());

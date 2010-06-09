@@ -2,8 +2,11 @@ package org.ygl.lytes;
 
 import java.util.Random;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Point;
+
 
 /**
  * This will be the base class for the different grid types. 
@@ -13,11 +16,10 @@ import android.graphics.Canvas;
  */
 public abstract class Grid {
 	
-	protected Bitmap onImage, offImage;
-	
 	public static final int MIN_ALPHA = 0;
 	public static final int MAX_ALPHA = 255;
 	public static int GRID_LENGTH = 5;
+	public static int TILE_SIZE;
 	
 	protected int gameCode;		// the game ID
 	protected int par;			// number of clicks the user gets
@@ -25,25 +27,14 @@ public abstract class Grid {
 	protected int count;		// the number of lights currently on
 
 	protected Tile[][] grid;	// the array of tiles:
-	
-	public Grid(final int gridLength) {
-		GRID_LENGTH = gridLength;
-		// create the matrix:
-		grid = new Tile[GRID_LENGTH][GRID_LENGTH];
-		for (int i=0; i<grid.length; i++) {
-			grid[i] = new Tile[GRID_LENGTH];
-			for (int j=0; j<GRID_LENGTH; j++)
-				grid[i][j] = new Tile();
-		}
-		gameCode = 1;
-	}
+	protected Bitmap onImage, offImage;
 	
 	/**
 	 * 
 	 * Inner class representing an individual tile.
 	 * Tiles have a on/off state as well as an alpha value
 	 */
-	private class Tile {
+	class Tile {
 		boolean state;
 		int alpha;
 		
@@ -80,7 +71,7 @@ public abstract class Grid {
 		}
 		
 		/**
-		 * updates the alpha value for this <code>Tile</cdoe>.
+		 * updates the alpha value for this <code>Tile</code>.
 		 * @param dt the change in alpha
 		 * @return true if another animation will be
 		 * needed, false if the animation is done.
@@ -103,7 +94,7 @@ public abstract class Grid {
 		}
 		
 		/**
-		 * Checks if this <code>Tile</cdoe> is in
+		 * Checks if this <code>Tile</code> is in
 		 * the process of being animated.
 		 * @return 
 		 */
@@ -135,18 +126,40 @@ public abstract class Grid {
 		clear(animate);
 		
 		// do a series of random clicks
+		int randY;
 		for(int i=0; i<par; i++) {
-			toggle(rand.nextInt(SquareGrid.GRID_LENGTH), rand.nextInt(GRID_LENGTH), animate);
+			randY = rand.nextInt(GRID_LENGTH);
+			toggle(rand.nextInt(grid[randY].length), randY, animate);
 		}
 	}
 
 	/**
 	 * toggles the cell at the given index,
-	 * as well as its 4 neighbors.
+	 * as well as its neighbors.
 	 * @param i the i index of the cell
 	 * @param j the j index of the cell
 	 */
-	protected abstract void toggle(int i, int j, boolean animate);
+	protected void toggle(int i, int j, boolean animate)
+	{
+		// Sanity check
+		if(j < 0 || j >= grid.length || i < 0 || i >= grid[j].length)
+			return;
+		
+		// Toggle this tile
+		count += grid[j][i].toggle(animate);
+		
+		// Toggle all neighbor tiles, use abstract getNeighborTiles() method to make this
+		// as generic as possible.
+		Tile[] neighbors = getNeighborTiles(i, j);
+		if(neighbors != null)
+		{
+			for(Tile tile : neighbors) {
+				if(tile != null) {
+					count += tile.toggle(animate);
+				}
+			}
+		}
+	}
 
 	/**
 	 * clears the board.
@@ -155,12 +168,27 @@ public abstract class Grid {
 		setAll(false, animate);
 	}
 	
+	/**
+	 * Loads tile images relevant to this grid.
+	 * @param context
+	 */
+	protected abstract void loadImages(Context context);
+	
+	/**
+	 * Returns a list of all neighboring tiles
+	 */
+	protected abstract Tile[] getNeighborTiles(int i, int j);
+	
+	protected abstract void getTilePos(int i, int j, Point pos);
+	
+	protected abstract boolean touchTile(int mouse_x, int mouse_y);
+	
 	/* package private */
 	final void setAll(boolean on, boolean animate) {
 		count = (on)? GRID_LENGTH * GRID_LENGTH : 0;
-		for(int i=0; i < GRID_LENGTH; i++) {
-			for(int j=0; j < GRID_LENGTH; j++) {
-				grid[i][j].set(on, animate);
+		for(int j=0; j < grid.length; j++) {
+			for(int i=0; i < grid[j].length; i++) {
+				grid[j][i].set(on, animate);
 			}
 		}
 	}
