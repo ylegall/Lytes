@@ -2,6 +2,9 @@ package org.ygl.lytes;
 
 import java.util.Random;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+
 /**
  * This will be the base class for the different grid types. 
  * It should contain fields and methods that are common to
@@ -9,6 +12,8 @@ import java.util.Random;
  *
  */
 public abstract class Grid {
+	
+	protected Bitmap onImage, offImage;
 	
 	public static final int MIN_ALPHA = 0;
 	public static final int MAX_ALPHA = 255;
@@ -20,6 +25,18 @@ public abstract class Grid {
 	protected int count;		// the number of lights currently on
 
 	protected Tile[][] grid;	// the array of tiles:
+	
+	public Grid(final int gridLength) {
+		GRID_LENGTH = gridLength;
+		// create the matrix:
+		grid = new Tile[GRID_LENGTH][GRID_LENGTH];
+		for (int i=0; i<grid.length; i++) {
+			grid[i] = new Tile[GRID_LENGTH];
+			for (int j=0; j<GRID_LENGTH; j++)
+				grid[i][j] = new Tile();
+		}
+		gameCode = 1;
+	}
 	
 	/**
 	 * 
@@ -147,6 +164,13 @@ public abstract class Grid {
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 * @param canvas
+	 * @return
+	 */
+	protected abstract boolean draw(Canvas canvas);
 	
 	/**
 	 * Checks if the board has any lights turned on.
