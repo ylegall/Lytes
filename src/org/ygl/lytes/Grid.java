@@ -5,6 +5,7 @@ import java.util.Random;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
 
 
@@ -20,6 +21,7 @@ public abstract class Grid {
 	public static final int MAX_ALPHA = 255;
 	public static int GRID_LENGTH = 5;
 	public static int TILE_SIZE;
+	static int ANIM_SPEED = 28;
 	
 	protected int gameCode;		// the game ID
 	protected int par;			// number of clicks the user gets
@@ -28,6 +30,13 @@ public abstract class Grid {
 
 	protected Tile[][] grid;	// the array of tiles:
 	protected Bitmap onImage, offImage;
+	protected Paint fullPaint, partPaint;
+	
+	public Grid(final int gridLength) {
+		GRID_LENGTH = gridLength;
+		fullPaint = new Paint();
+		partPaint = new Paint();
+	}
 	
 	/**
 	 * 

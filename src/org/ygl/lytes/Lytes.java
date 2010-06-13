@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -18,9 +19,9 @@ public class Lytes extends Activity implements View.OnClickListener {
 	static Grid grid;
 	public static final String ICICLE_KEY = "lytes";
 	public static final int INVALID_GAME_CODE = 0;
-	public static final int WIN_GAME = 1;
+	public static final int NEW_GAME_DIALOG = 1;
 	
-	private static int highestLevel;
+	private static int highestLevel = 1;
 
 	/**
 	 * Called when the activity is first created. 
@@ -28,7 +29,7 @@ public class Lytes extends Activity implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+        //grid = new SquareGrid(5);
         grid = new HexGrid(5);
         changeContentView(R.layout.main);
     }
@@ -180,7 +181,9 @@ public class Lytes extends Activity implements View.OnClickListener {
 	
 	/**
 	 * Creates and shows different message dialogs based on
-	 * a static integer code. Invoked by calling <code>showDialog(int)</code>
+	 * a static integer code. Invoked by calling <code>showDialog(int)</code>.
+	 * 
+	 * can show a newGameDialog
 	 */
 	@Override
 	protected Dialog onCreateDialog(int dialogID) {
@@ -195,6 +198,8 @@ public class Lytes extends Activity implements View.OnClickListener {
 			        	   dialog.cancel();
 			           }
 			       });
+				break;
+			case NEW_GAME_DIALOG:
 				break;
 		}
 		builder.setCancelable(false);

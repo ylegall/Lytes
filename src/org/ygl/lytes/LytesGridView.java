@@ -26,21 +26,21 @@ public class LytesGridView extends View implements View.OnTouchListener {
 
 	Grid grid;
 
-	private Paint fullPaint, partPaint;
-	static int TILE_SIZE = 64;
-	static int XOFFSET = 0; // TODO: remove
-	static int YOFFSET = 0; // TODO: remove
-	static final String tag = "LYTES"; // TODO: remove
-	static int ANIM_SPEED = 25;
+	//private Paint fullPaint, partPaint;
+	//static int TILE_SIZE = 64;	// TODO move
+	//static int XOFFSET = 0; // TODO: remove
+	//static int YOFFSET = 0; // TODO: remove
+	//static final String tag = "LYTES"; // TODO: remove
+	//static int ANIM_SPEED = 25;
 	
 	public LytesGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		this.setOnTouchListener(this);
 		grid = Lytes.grid;
 		
-		// used for drawing:
-		fullPaint = new Paint();
-		partPaint = new Paint();
+//		// used for drawing:
+//		fullPaint = new Paint();
+//		partPaint = new Paint();
 		
 		grid.loadImages(context);
 	}
@@ -48,7 +48,8 @@ public class LytesGridView extends View implements View.OnTouchListener {
 	@Override
 	public void onMeasure(final int width, final int height) {
 		int size = Math.min(View.MeasureSpec.getSize(width), View.MeasureSpec.getSize(height));
-		TILE_SIZE = size / SquareGrid.GRID_LENGTH;
+		//TILE_SIZE = size / SquareGrid.GRID_LENGTH;
+		Grid.TILE_SIZE = size / Grid.GRID_LENGTH;
 		setMeasuredDimension(size, size);
 	}
 
@@ -56,47 +57,51 @@ public class LytesGridView extends View implements View.OnTouchListener {
     @Override
     public void onDraw(Canvas canvas) {
 
-    	boolean redraw = false;
-    	Rect tileRect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
-    	Point pos = new Point();
-        
-        for (int y = 0 ; y < grid.grid.length; y++) {
-            for (int x = 0 ; x < grid.grid[y].length; x++) {
-            	grid.getTilePos(x, y, pos);
-            	tileRect.offsetTo(pos.x, pos.y);
-            	
-            	if(grid.grid[y][x].isAnimating()) {
-            		// offImage is always draw during animation to provide a background.
-            		canvas.drawBitmap(grid.offImage, null, tileRect, fullPaint);
-            		
-            		// draw onImage with opacity defined by the tiles alpha over top.
-            		partPaint.setAlpha(grid.grid[y][x].alpha);
-            		canvas.drawBitmap(grid.onImage, null, tileRect, partPaint);
-            		
-            		// Now update the alpha based on the destination state
-            		// Increasing the number passed to the update will increase
-            		// the speed of the animation.
-            		if (grid.grid[y][x].update(ANIM_SPEED)) {
-            			redraw = true;
-            		}
-            		
-            	}
-            	else if(grid.grid[y][x].state) {
-            		canvas.drawBitmap(grid.onImage, null, tileRect, fullPaint);
-            	}
-            	else {
-            		canvas.drawBitmap(grid.offImage, null, tileRect, fullPaint);
-            	}
-            }
-        }
-        
-        // Immediately invalidate the view if a redraw is needed.
-        if(redraw)
-        {
-        	// Draw a visible indication of redraw for debug purposes.
-        	//canvas.drawRect(0, 0, 10, 10, fullPaint);        	
-        	invalidate();
-        }
+    	if(grid.draw(canvas)) {
+    		invalidate();
+    	}
+    	
+//    	boolean redraw = false;
+//    	Rect tileRect = new Rect(0, 0, TILE_SIZE, TILE_SIZE);
+//    	Point pos = new Point();
+//        
+//        for (int y = 0 ; y < grid.grid.length; y++) {
+//            for (int x = 0 ; x < grid.grid[y].length; x++) {
+//            	grid.getTilePos(x, y, pos);
+//            	tileRect.offsetTo(pos.x, pos.y);
+//            	
+//            	if(grid.grid[y][x].isAnimating()) {
+//            		// offImage is always draw during animation to provide a background.
+//            		canvas.drawBitmap(grid.offImage, null, tileRect, fullPaint);
+//            		
+//            		// draw onImage with opacity defined by the tiles alpha over top.
+//            		partPaint.setAlpha(grid.grid[y][x].alpha);
+//            		canvas.drawBitmap(grid.onImage, null, tileRect, partPaint);
+//            		
+//            		// Now update the alpha based on the destination state
+//            		// Increasing the number passed to the update will increase
+//            		// the speed of the animation.
+//            		if (grid.grid[y][x].update(ANIM_SPEED)) {
+//            			redraw = true;
+//            		}
+//            		
+//            	}
+//            	else if(grid.grid[y][x].state) {
+//            		canvas.drawBitmap(grid.onImage, null, tileRect, fullPaint);
+//            	}
+//            	else {
+//            		canvas.drawBitmap(grid.offImage, null, tileRect, fullPaint);
+//            	}
+//            }
+//        }
+//        
+//        // Immediately invalidate the view if a redraw is needed.
+//        if(redraw)
+//        {
+//        	// Draw a visible indication of redraw for debug purposes.
+//        	//canvas.drawRect(0, 0, 10, 10, fullPaint);        	
+//        	invalidate();
+//        }
 
     }
     
@@ -106,8 +111,8 @@ public class LytesGridView extends View implements View.OnTouchListener {
 		if(event.getAction() == MotionEvent.ACTION_UP) {
 			int x = (int)event.getX();
 			int y = (int)event.getY();
-			x -= XOFFSET;
-			y -= YOFFSET;
+//			x -= XOFFSET;
+//			y -= YOFFSET;
 			
 			if(!grid.touchTile(x, y)) {
 				
@@ -131,8 +136,6 @@ public class LytesGridView extends View implements View.OnTouchListener {
 				
 				grid.setAll(false, true);
 				invalidate();
-//				grid.setAll(true, true);
-//				invalidate();
 				
 				String winText = String.format("level %d completed!", grid.gameCode);
 				Toast toast = Toast.makeText(context, winText, Toast.LENGTH_SHORT);

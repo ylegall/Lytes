@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:gravity="center"
@@ -21,19 +22,20 @@
 		<Button
 			android:id="@+id/continueButton"
 			android:text="Continue" 
-	        	android:layout_width="fill_parent"
-	        	android:layout_height="wrap_content"
-	        	android:textStyle="bold"
-	        	android:clickable="true"
-	        	android:background="@drawable/but"/>
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textStyle="bold"
+        	android:clickable="true"
+        	android:background="@drawable/but"/>
+        	
 		<Button
 			android:id="@+id/newGameButton"
 			android:text="New Game" 
-	        	android:layout_width="fill_parent"
-	        	android:layout_height="wrap_content"
-	        	android:textStyle="bold"
-	        	android:clickable="true"
-	        	android:background="@drawable/but"/>
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textStyle="bold"
+        	android:clickable="true"
+        	android:background="@drawable/but"/>
 	
 		<LinearLayout
 			android:id="@+id/LinearLayout01"
@@ -45,31 +47,31 @@
 			<Button
 				android:id="@+id/selectGameButton"
 				android:text="Select Game"
-		        	android:layout_width="fill_parent"
-		        	android:layout_height="wrap_content"
-		        	android:layout_weight="1"
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:layout_weight="1"
 				android:textStyle="bold"
 				android:clickable="true"
 				android:background="@drawable/but"/>
-		    	<EditText
-		        	android:id="@+id/selectTextField"
-		        	android:layout_width="fill_parent"
-		        	android:layout_height="wrap_content"
-		        	android:layout_weight="3"
-		        	android:background="@android:drawable/editbox_background"
-		        	android:numeric="integer"
-		        	android:maxLength="3"/>
+	    	<EditText
+	        	android:id="@+id/selectTextField"
+	        	android:layout_width="fill_parent"
+	        	android:layout_height="wrap_content"
+	        	android:layout_weight="3"
+	        	android:background="@android:drawable/editbox_background"
+	        	android:numeric="integer"
+	        	android:maxLength="3"/>
 			
 		</LinearLayout>
 		
 		<Button
 			android:id="@+id/exitGameButton"
 			android:text="Exit" 
-	        	android:layout_width="fill_parent"
-	        	android:layout_height="wrap_content"
-	        	android:textStyle="bold"
-	        	android:clickable="true"
-	        	android:background="@drawable/but"/>
+        	android:layout_width="fill_parent"
+        	android:layout_height="wrap_content"
+        	android:textStyle="bold"
+        	android:clickable="true"
+        	android:background="@drawable/but"/>
         	
 	</LinearLayout>
 </LinearLayout>
