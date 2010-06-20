@@ -100,6 +100,7 @@ public class SquareGrid extends Grid {
 		mouse_y /= TILE_SIZE;
 		
 		if (mouse_x < GRID_LENGTH && mouse_y < GRID_LENGTH) {
+			totalClicks++;
 			toggle(mouse_x, mouse_y, true);
 			return true;
 		}

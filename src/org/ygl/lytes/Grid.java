@@ -19,6 +19,14 @@ public abstract class Grid {
 	
 	public static final int MIN_ALPHA = 0;
 	public static final int MAX_ALPHA = 255;
+	
+	public static final int GRID_TYPE_SQAURE = 0;
+	public static final int GRID_TYPE_HEX = 1;
+	
+	public static final int DIFFICULTY_EASY = 4;
+	public static final int DIFFICULTY_MED = 5;
+	public static final int DIFFICULTY_HARD = 6;
+	
 	public static int GRID_LENGTH = 5;
 	public static int TILE_SIZE;
 	static int ANIM_SPEED = 28;
@@ -138,7 +146,7 @@ public abstract class Grid {
 		int randY;
 		for(int i=0; i<par; i++) {
 			randY = rand.nextInt(GRID_LENGTH);
-			toggle(rand.nextInt(grid[randY].length), randY, animate);
+			toggle(rand.nextInt(grid[randY].length), randY, false);
 		}
 	}
 

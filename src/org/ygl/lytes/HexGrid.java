@@ -113,12 +113,8 @@ public class HexGrid extends Grid {
 	
 	protected boolean touchTile(int mouse_x, int mouse_y)
 	{
-		// TODO: move TILE_SIZE to Grid.java
-		// TODO: dynamically determine at load time
-		//int tile_size = 55;
 		
 		mouse_y /= TILE_SIZE;
-		
 		if (mouse_y >= GRID_LENGTH) {
 			return false;
 		}
@@ -131,6 +127,7 @@ public class HexGrid extends Grid {
 			
 		mouse_x /= TILE_SIZE;
 		if (mouse_x < grid[mouse_y].length) {
+			totalClicks++;
 			toggle(mouse_x, mouse_y, true);
 			return true;
 		}

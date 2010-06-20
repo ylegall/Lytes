@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center_horizontal"
+    android:background="#333333"
+    android:padding="10dp">
+		<TextView
+			android:layout_height="wrap_content"
+		    android:textSize="20sp"
+		    android:textStyle="bold"
+			android:layout_width="wrap_content" android:text="difficulty" android:layout_marginTop="10px" android:textColor="#ffffff">
+		</TextView>
+		
+	    <RatingBar
+	    	android:id="@+id/difficulty"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:numStars="3"
+	        android:stepSize="1.0" android:clickable="true" android:rating="1"/>
+	        
+		<TextView
+			android:layout_height="wrap_content"
+		    android:textSize="20sp"
+		    android:textStyle="bold"
+			android:textColor="#ffffff" android:layout_width="wrap_content" android:text="game type" android:layout_marginTop="20px">
+		</TextView>
+		
+<!--	<LinearLayout-->
+<!--		android:orientation="horizontal"-->
+<!--		android:layout_width="fill_parent"-->
+<!--		android:layout_height="wrap_content">-->
+
+		    <RadioGroup
+		      	android:layout_width="fill_parent"
+		      	android:layout_height="wrap_content"
+		      	android:orientation="horizontal"
+		      	android:gravity="center_horizontal">
+		      <RadioButton
+		      		android:id="@+id/radio_square"
+		          	android:layout_width="wrap_content"
+		          	android:layout_height="wrap_content"
+		          	android:text="Square"
+		          	android:layout_margin="10px" android:checked="true"/>
+		      <RadioButton android:id="@+id/radio_hex"
+		          	android:layout_width="wrap_content"
+		          	android:layout_height="wrap_content"
+		          	android:text="Hex"
+		          	android:layout_margin="10px"/>
+		    </RadioGroup>
+		    
+<!--		</LinearLayout>-->
+
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		
+		<Button
+			android:id="@+id/newGameOK"
+			android:layout_height="wrap_content"
+			android:layout_width="0px"
+			android:layout_weight="1"
+			android:text="OK"
+			android:background="@drawable/but"
+			android:textSize="20px"
+			android:textStyle="bold">
+		</Button>
+		<Button
+			android:id="@+id/newGameCancel"
+			android:layout_height="wrap_content"
+			android:layout_width="0px"
+			android:layout_weight="1"
+			android:text="Cancel"
+			android:background="@drawable/but"
+			android:textStyle="bold"
+			android:textSize="20px">
+		</Button>
+	</LinearLayout>
+
+</LinearLayout>
+
+<!--  
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/layout_root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="10px">
+		<TextView
+			android:layout_alignParentLeft="true"
+			android:layout_below="@id/layout_root" 
+			android:text="select a difficulty"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"
+			android:textColor="#ffffff">
+		</TextView>
+		
+</RelativeLayout>
+-->

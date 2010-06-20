@@ -25,13 +25,16 @@ public final class R {
         public static final int backButton=0x7f050002;
         public static final int clicksLabel=0x7f050004;
         public static final int continueButton=0x7f050007;
-        public static final int difficulty=0x7f05000e;
+        public static final int difficulty=0x7f05000d;
         public static final int exitGameButton=0x7f05000c;
-        public static final int layout_root=0x7f05000d;
         public static final int levelLabel=0x7f050003;
         public static final int lytesGridView=0x7f050000;
         public static final int newGameButton=0x7f050008;
+        public static final int newGameCancel=0x7f050011;
+        public static final int newGameOK=0x7f050010;
         public static final int parLabel=0x7f050005;
+        public static final int radio_hex=0x7f05000f;
+        public static final int radio_square=0x7f05000e;
         public static final int resetButton=0x7f050001;
         public static final int selectGameButton=0x7f05000a;
         public static final int selectTextField=0x7f05000b;
@@ -39,7 +42,7 @@ public final class R {
     public static final class layout {
         public static final int game=0x7f030000;
         public static final int main=0x7f030001;
-        public static final int new_game_dialog=0x7f030002;
+        public static final int new_game_form=0x7f030002;
     }
     public static final class string {
         public static final int app_name=0x7f040001;
