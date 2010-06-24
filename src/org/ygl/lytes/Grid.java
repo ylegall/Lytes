@@ -31,7 +31,7 @@ public abstract class Grid {
 	public static int TILE_SIZE;
 	static int ANIM_SPEED = 28;
 	
-	protected int gameCode;		// the game ID
+	protected int gameCode;		// the game ID //TODO: phase this out in favor of the SessionData.currentLevel
 	protected int par;			// number of clicks the user gets
 	protected int totalClicks;	// total usre clicks so far
 	protected int count;		// the number of lights currently on
@@ -143,10 +143,47 @@ public abstract class Grid {
 		clear(animate);
 		
 		// do a series of random clicks
-		int randY;
-		for(int i=0; i<par; i++) {
-			randY = rand.nextInt(GRID_LENGTH);
-			toggle(rand.nextInt(grid[randY].length), randY, false);
+		int randY, randX;
+		
+		switch (Lytes.sessionData.difficulty) {
+			
+			case Grid.DIFFICULTY_EASY: 	// reflection
+				
+				boolean vertical = rand.nextBoolean();
+				for (int i = 0; i < par; i++) {
+					randY = rand.nextInt(GRID_LENGTH);
+					randX = rand.nextInt(GRID_LENGTH);
+					toggle(randY, randX, false);
+					i++;
+					if(vertical) {
+						toggle(randY, GRID_LENGTH - randX - 1, false);
+					} else {
+						toggle(GRID_LENGTH - randY - 1, randX, false);
+					}
+					
+				}
+				par++; // an even par is required for symmetric boards
+				break;
+				
+			case Grid.DIFFICULTY_MED:	// rotational symmetry
+				
+				for (int i = 0; i < par; i++) {
+					randY = rand.nextInt(GRID_LENGTH);
+					randX = rand.nextInt(GRID_LENGTH);
+					toggle(randX, randY, false);
+					i++;
+					toggle(randY, randX, false);
+				}
+				par++; // an even par is required for symmetric boards
+				break;
+				
+			case Grid.DIFFICULTY_HARD:	// random clicks
+				for (int i = 0; i < par; i++) {
+					randY = rand.nextInt(GRID_LENGTH);
+					toggle(rand.nextInt(grid[randY].length), randY, false);
+				}
+			break;
+
 		}
 	}
 
