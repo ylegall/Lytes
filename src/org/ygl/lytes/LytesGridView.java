@@ -89,7 +89,7 @@ public class LytesGridView extends View implements View.OnTouchListener {
 				toast.show();
 				
 				// show the next board and update the lables:
-				Lytes.sessionData.currentLevel++;
+				Lytes.sessionData.currentLevel = grid.gameCode + 1;
 				Lytes.setHighestLevel(grid.gameCode + 1);
 				((Lytes)context).loadGame(grid.gameCode + 1);
 			}

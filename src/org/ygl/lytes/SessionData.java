@@ -10,6 +10,8 @@ public class SessionData {
 	int gridType;
 	int difficulty;
 	int currentLevel;
+	int clicks; // current number of user clicks
+	// TODO: store the configuration of the grid
 	//int score;
 	
 	/**

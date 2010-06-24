@@ -37,9 +37,18 @@ public class Lytes extends Activity implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        grid = new SquareGrid(5);
-        //grid = new HexGrid(5);
-        sessionData = new SessionData();
+        
+        sessionData = (SessionData)getLastNonConfigurationInstance();
+        if(sessionData == null) {
+        	sessionData = new SessionData();
+        }
+        
+        if(sessionData.gridType == Grid.GRID_TYPE_SQAURE) {
+        	grid = new SquareGrid(sessionData.difficulty);
+        } else {
+        	grid = new HexGrid(sessionData.difficulty);
+        }
+        
         changeContentView(R.layout.main);
     }
     
@@ -227,6 +236,12 @@ public class Lytes extends Activity implements View.OnClickListener {
         sessionData.gridType = prefs.getInt("gridType", Grid.GRID_TYPE_SQAURE);
         sessionData.difficulty = prefs.getInt("difficulty", Grid.DIFFICULTY_MED);
         
+        if(sessionData.gridType == Grid.GRID_TYPE_SQAURE) {
+        	grid = new SquareGrid(sessionData.difficulty);
+        } else {
+	    	grid = new HexGrid(sessionData.difficulty);
+	    }
+        
         if(sessionData.currentLevel != INVALID_GAME_CODE) {
         	changeContentView(R.layout.game);
         	loadGame(sessionData.currentLevel);
@@ -254,6 +269,16 @@ public class Lytes extends Activity implements View.OnClickListener {
         editor.putInt("gridType", sessionData.gridType);
         editor.putInt("difficulty", sessionData.difficulty);
         editor.commit();
+    }
+    
+    /**
+     * saves game state quickly during orientation changes.
+     * @see http://android-developers.blogspot.com/2009/02/faster-screen-orientation-change.html
+     * @return The SessionData as an Object
+     */
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+    	return sessionData;
     }
 	
 	/**
