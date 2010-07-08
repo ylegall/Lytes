@@ -133,6 +133,7 @@ public class Lytes extends Activity implements View.OnClickListener {
 				
 			case R.id.newGameButton:
 				changeContentView(R.layout.new_game_form);
+				// TODO: remove
 //				grid.setupGame(1, false);
 //				// start a new game:
 //				changeContentView(R.layout.game);
@@ -140,6 +141,7 @@ public class Lytes extends Activity implements View.OnClickListener {
 				break;
 				
 			case R.id.continueButton:
+				// TODO: remove
 //		        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
 //		        gameCode = prefs.getInt("highestLevel", INVALID_GAME_CODE);
 				changeContentView(R.layout.game);
@@ -257,6 +259,7 @@ public class Lytes extends Activity implements View.OnClickListener {
         	grid.restore(sessionData);
         	TextView tv = (TextView)findViewById(R.id.clicksLabel);
         	tv.setText("Clicks "+sessionData.clicks);
+        	sessionData.gridData = null;
         }
     }
 
