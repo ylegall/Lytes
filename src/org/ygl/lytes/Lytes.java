@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -40,7 +41,10 @@ public class Lytes extends Activity implements View.OnClickListener {
         
         sessionData = (SessionData)getLastNonConfigurationInstance();
         if(sessionData == null) {
+        	Log.i("LYTES", "session Data is null!"); // TODO: remove
         	sessionData = new SessionData();
+        } else { 
+        	Log.i("LYTES", "session Data is not null!"); // TODO: remove
         }
         
         if(sessionData.gridType == Grid.GRID_TYPE_SQAURE) {
@@ -244,7 +248,15 @@ public class Lytes extends Activity implements View.OnClickListener {
         
         if(sessionData.currentLevel != INVALID_GAME_CODE) {
         	changeContentView(R.layout.game);
-        	loadGame(sessionData.currentLevel);
+        	loadGame(sessionData.currentLevel);;
+        }
+        
+        // if we were in the middle of a game
+        // when the orientation changed, the restore the game:
+        if(sessionData.gridData != null) {
+        	grid.restore(sessionData);
+        	TextView tv = (TextView)findViewById(R.id.clicksLabel);
+        	tv.setText("Clicks "+sessionData.clicks);
         }
     }
 
@@ -278,6 +290,9 @@ public class Lytes extends Activity implements View.OnClickListener {
      */
     @Override
     public Object onRetainNonConfigurationInstance() {
+    	// save the exact state of the grid:
+    	Log.i("LYTES", "onRetainNonConfigurationInstance called!");
+    	grid.save(sessionData);
     	return sessionData;
     }
 	

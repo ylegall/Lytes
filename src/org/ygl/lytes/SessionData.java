@@ -1,5 +1,7 @@
 package org.ygl.lytes;
 
+import java.util.BitSet;
+
 /**
  * 
  * @author ylegall
@@ -11,7 +13,9 @@ public class SessionData {
 	int difficulty;
 	int currentLevel;
 	int clicks; // current number of user clicks
-	// TODO: store the configuration of the grid
+	
+	BitSet gridData;
+	
 	//int score;
 	
 	/**
