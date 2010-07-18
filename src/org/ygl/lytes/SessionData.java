@@ -11,7 +11,7 @@ import java.util.BitSet;
 public class SessionData {
 	int gridType;
 	int difficulty;
-	int currentLevel;
+	int currentLevel = 1;
 	int clicks; // current number of user clicks
 	
 	BitSet gridData;
@@ -26,5 +26,6 @@ public class SessionData {
 		gridType = Grid.GRID_TYPE_SQAURE;
 		difficulty = Grid.DIFFICULTY_MED;
 		currentLevel = 1;
+		clicks = 0;
 	}
 }
