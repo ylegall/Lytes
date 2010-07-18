@@ -281,7 +281,7 @@ public class Lytes extends Activity implements View.OnClickListener {
         highestHexMed = prefs.getInt("highestHexMed", INVALID_GAME_CODE);
         highestHexHard = prefs.getInt("highestHexHard", INVALID_GAME_CODE);
         
-        sessionData.currentLevel = prefs.getInt("currentLevel", INVALID_GAME_CODE);
+        sessionData.currentLevel = prefs.getInt("currentLevel", 1);
         sessionData.gridType = prefs.getInt("gridType", Grid.GRID_TYPE_SQAURE);
         sessionData.difficulty = prefs.getInt("difficulty", Grid.DIFFICULTY_MED);
         
@@ -291,7 +291,7 @@ public class Lytes extends Activity implements View.OnClickListener {
 	    	grid = new HexGrid(sessionData.difficulty);
 	    }
         
-        if(sessionData.currentLevel != INVALID_GAME_CODE) {
+        if(sessionData.currentLevel > 1) {
         	changeContentView(R.layout.game);
         	loadGame(sessionData.currentLevel);;
         }
