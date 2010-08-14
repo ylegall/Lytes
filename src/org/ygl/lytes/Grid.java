@@ -1,5 +1,6 @@
 package org.ygl.lytes;
 
+import java.util.BitSet;
 import java.util.Random;
 
 import android.content.Context;
@@ -260,6 +261,46 @@ public abstract class Grid {
 	 */
 	public final boolean isEmpty() {
 		return this.count == 0;
+	}
+	
+	/**
+	 * Saves the configuration of the game in the sessionData object.
+	 * This is called during orientation changes to ensure that, when
+	 * the game resumes, the level will not be restarted.
+	 * @param sessionData
+	 */
+	public void save(final SessionData sessionData) {
+		sessionData.clicks = this.totalClicks;
+		
+		// store a bitset to indicate which tiles are on/off
+		sessionData.gridData = new BitSet(GRID_LENGTH*GRID_LENGTH);
+		for(int i=0; i < GRID_LENGTH; i++) {
+			for(int j=0; j < GRID_LENGTH; j++) {
+				if(grid[i][j].state) {
+					sessionData.gridData.set(GRID_LENGTH*i + j);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Restores this grid to its previous configuration
+	 * according to the sessionData object.
+	 * @param sessionData
+	 */
+	public void restore(final SessionData sessionData) {
+		this.totalClicks = sessionData.clicks;
+		this.count = 0;
+		for(int i=0; i < GRID_LENGTH; i++) {
+			for(int j=0; j < GRID_LENGTH; j++) {
+				if(sessionData.gridData.get(GRID_LENGTH*i + j)) {
+					this.grid[i][j].state = true;
+					this.count++;
+				} else {
+					this.grid[i][j].state = false;
+				}
+			}
+		}
 	}
 	
 }

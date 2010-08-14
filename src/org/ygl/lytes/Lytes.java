@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -20,7 +21,10 @@ public class Lytes extends Activity implements View.OnClickListener {
 	static SessionData sessionData;
 	static Grid grid;
 	public static final String ICICLE_KEY = "lytes";
+	
 	public static final int INVALID_GAME_CODE = 0;
+	public static final int LEVEL_NOT_UNLOCKED = 1;
+	
 	// public static final int NEW_GAME_DIALOG = 1;
 	
 	// highest level data:
@@ -33,6 +37,7 @@ public class Lytes extends Activity implements View.OnClickListener {
 
 	/**
 	 * Called when the activity is first created. 
+	 * We don't use the Bundle for anything.
 	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +45,10 @@ public class Lytes extends Activity implements View.OnClickListener {
         
         sessionData = (SessionData)getLastNonConfigurationInstance();
         if(sessionData == null) {
+        	//Log.i("LYTES", "session Data is null!"); // TODO: remove
         	sessionData = new SessionData();
+        } else { 
+        	//Log.i("LYTES", "session Data is not null!"); // TODO: remove
         }
         
         if(sessionData.gridType == Grid.GRID_TYPE_SQAURE) {
@@ -52,9 +60,10 @@ public class Lytes extends Activity implements View.OnClickListener {
         changeContentView(R.layout.main);
     }
     
-    // changes the content view between 2 options:
+    // changes the content view between 3 options:
     // 1. the main menu
     // 2. the game screen
+    // 3. the new game select form
     private final void changeContentView(int id) {
     	switch(id) {
     		case R.layout.game:
@@ -86,7 +95,11 @@ public class Lytes extends Activity implements View.OnClickListener {
     	}
     }
     
-	@Override
+    /**
+     * Handles the all of the button clicks, including in-game
+     * buttons and the main-menu buttons.
+     */
+    @Override
 	public void onClick(View view) {
 		
 		// check if the select button pressed:
@@ -115,6 +128,12 @@ public class Lytes extends Activity implements View.OnClickListener {
 					return;
 				}
 				
+				// check if the level has not been unlocked:
+				if(gameCode > getHighestLevel()) {
+					showDialog(LEVEL_NOT_UNLOCKED);
+					return;
+				}
+				
 				// Force the soft keyboard to hide when game starts.
 				InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(textField.getWindowToken(), 0);
@@ -129,6 +148,7 @@ public class Lytes extends Activity implements View.OnClickListener {
 				
 			case R.id.newGameButton:
 				changeContentView(R.layout.new_game_form);
+				// TODO: remove
 //				grid.setupGame(1, false);
 //				// start a new game:
 //				changeContentView(R.layout.game);
@@ -136,6 +156,7 @@ public class Lytes extends Activity implements View.OnClickListener {
 				break;
 				
 			case R.id.continueButton:
+				// TODO: remove
 //		        SharedPreferences prefs = getPreferences(Activity.MODE_PRIVATE); 
 //		        gameCode = prefs.getInt("highestLevel", INVALID_GAME_CODE);
 				changeContentView(R.layout.game);
@@ -192,6 +213,11 @@ public class Lytes extends Activity implements View.OnClickListener {
 		findViewById(R.id.lytesGridView).invalidate();
 	}
 	
+	/**
+	 * Sets the new highest level for the current
+	 * game type and difficulty.
+	 * @param level
+	 */
 	final static void setHighestLevel(final int level) {
 		if(sessionData.gridType == Grid.GRID_TYPE_HEX) {
 			switch(sessionData.difficulty) {
@@ -214,6 +240,29 @@ public class Lytes extends Activity implements View.OnClickListener {
 		}
 	}
 	
+	/**
+	 * Gets the highest level for the current
+	 * game type and difficulty.
+	 * @return level
+	 */
+	final static int getHighestLevel() {
+		if(sessionData.gridType == Grid.GRID_TYPE_HEX) {
+			switch(sessionData.difficulty) {
+				case Grid.DIFFICULTY_EASY: return highestHexEasy;
+				case Grid.DIFFICULTY_MED: return highestHexMed;
+				case Grid.DIFFICULTY_HARD: return highestHexHard;
+				default: return 1;
+			}
+		} else {
+			switch(sessionData.difficulty) {
+				case Grid.DIFFICULTY_EASY: return highestSquareEasy;
+				case Grid.DIFFICULTY_MED: return highestSquareMed;
+				case Grid.DIFFICULTY_HARD: return highestSquareHard;
+				default: return 1;
+			}
+		}
+	}
+	
     /**
      * Upon being resumed we can retrieve the current state. This allows us
      * to update the state if it was changed at any time while paused.
@@ -232,7 +281,7 @@ public class Lytes extends Activity implements View.OnClickListener {
         highestHexMed = prefs.getInt("highestHexMed", INVALID_GAME_CODE);
         highestHexHard = prefs.getInt("highestHexHard", INVALID_GAME_CODE);
         
-        sessionData.currentLevel = prefs.getInt("currentLevel", INVALID_GAME_CODE);
+        sessionData.currentLevel = prefs.getInt("currentLevel", 1);
         sessionData.gridType = prefs.getInt("gridType", Grid.GRID_TYPE_SQAURE);
         sessionData.difficulty = prefs.getInt("difficulty", Grid.DIFFICULTY_MED);
         
@@ -242,9 +291,18 @@ public class Lytes extends Activity implements View.OnClickListener {
 	    	grid = new HexGrid(sessionData.difficulty);
 	    }
         
-        if(sessionData.currentLevel != INVALID_GAME_CODE) {
+        if(sessionData.currentLevel > 1) {
         	changeContentView(R.layout.game);
-        	loadGame(sessionData.currentLevel);
+        	loadGame(sessionData.currentLevel);;
+        }
+        
+        // if we were in the middle of a game
+        // when the orientation changed, the restore the game:
+        if(sessionData.gridData != null) {
+        	grid.restore(sessionData);
+        	TextView tv = (TextView)findViewById(R.id.clicksLabel);
+        	tv.setText("Clicks "+sessionData.clicks);
+        	sessionData.gridData = null;
         }
     }
 
@@ -278,14 +336,15 @@ public class Lytes extends Activity implements View.OnClickListener {
      */
     @Override
     public Object onRetainNonConfigurationInstance() {
+    	// save the exact state of the grid:
+    	//Log.i("LYTES", "onRetainNonConfigurationInstance called!"); // TODO: remove
+    	grid.save(sessionData);
     	return sessionData;
     }
 	
 	/**
 	 * Creates and shows different message dialogs based on
 	 * a static integer code. Invoked by calling <code>showDialog(int)</code>.
-	 * 
-	 * can show a newGameDialog
 	 */
 	@Override
 	protected Dialog onCreateDialog(int dialogID) {
@@ -295,6 +354,14 @@ public class Lytes extends Activity implements View.OnClickListener {
 		switch(dialogID) {
 			case INVALID_GAME_CODE:
 				builder.setMessage("Invalid game code.\nPlease enter an integer between 1 and 999.");
+			    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+			           public void onClick(DialogInterface dialog, int id) {
+			        	   dialog.cancel();
+			           }
+			       });
+				break;
+			case LEVEL_NOT_UNLOCKED:
+				builder.setMessage("Sorry, that level has not been unlocked.");
 			    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			           public void onClick(DialogInterface dialog, int id) {
 			        	   dialog.cancel();
