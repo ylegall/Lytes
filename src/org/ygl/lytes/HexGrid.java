@@ -14,6 +14,7 @@ import android.graphics.drawable.Drawable;
 public class HexGrid extends Grid {
 	
 	private static final int MAX_NEIGHBORS = 6;
+	private static final int GLOBAL_OFFSET = 20;
 	
 	public HexGrid(final int gridLength) {
 		super(gridLength);
@@ -99,33 +100,42 @@ public class HexGrid extends Grid {
 		return neighbors;
 	}
 	
-	public void getTilePos(int i, int j, Point pos)
+	public void getTilePos(int j, int i, Point pos)
 	{
 		// TODO: move TILE_SIZE to Grid.java
 		// TODO: dynamically determine at load time
 		//int tile_size = 55; 
 		
-		int jig = (j%2) == 0 ? TILE_SIZE/2 : 0;
+		int jig = ((i%2) == 0) ? TILE_SIZE/2 : 5;
 		
-		pos.x = i*(TILE_SIZE) + jig;
-		pos.y = j*(TILE_SIZE);
+		pos.x = j*(TILE_SIZE) + GLOBAL_OFFSET + jig;
+		pos.y = i*(TILE_SIZE) + GLOBAL_OFFSET;
+		pos.x -= (j*TILE_SIZE/6);
+		pos.y -= (i*TILE_SIZE/4);
 	}
 	
 	protected boolean touchTile(int mouse_x, int mouse_y)
 	{
+		// reverse tranform coordinates:
+		mouse_x -= GLOBAL_OFFSET;
+		mouse_y -= GLOBAL_OFFSET;
+		mouse_x += ((mouse_x/TILE_SIZE)*TILE_SIZE)/6;
+		mouse_y += ((mouse_y/TILE_SIZE)*TILE_SIZE)/4;
+
+		int jig = (((mouse_y/TILE_SIZE)%2) == 0) ? TILE_SIZE/2 : 5;
+		mouse_x -= jig;
 		
+		mouse_x /= TILE_SIZE;
 		mouse_y /= TILE_SIZE;
+
 		if (mouse_y >= GRID_LENGTH) {
 			return false;
 		}
 		
-		int jig = (mouse_y%2) == 0 ? TILE_SIZE/2 : 0;
-		mouse_x -= jig;
 		if (mouse_x < 0) {
 			return false;
 		}
-			
-		mouse_x /= TILE_SIZE;
+
 		if (mouse_x < grid[mouse_y].length) {
 			totalClicks++;
 			toggle(mouse_x, mouse_y, true);
@@ -174,9 +184,9 @@ public class HexGrid extends Grid {
             	}
             	
             	// ########## DEBUG ########### 
-            	fullPaint.setColor(Color.RED);
-            	fullPaint.setStyle(Style.STROKE);
-            	canvas.drawRect(tileRect, fullPaint);
+//            	fullPaint.setColor(Color.RED);
+//            	fullPaint.setStyle(Style.STROKE);
+//            	canvas.drawRect(tileRect, fullPaint);
             	// ########## DEBUG ########### 
             }
         }
